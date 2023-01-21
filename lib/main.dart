@@ -37,8 +37,8 @@ class _MyHomePageState extends State<MyHomePage> {
   Widget build(BuildContext context) {
     // Get recipes from db
     List<String> ingredients = ['Ingredient1', 'Ingredient2'];
-    Recipe myRecipeOne = Recipe(1, "Köttbullar & Mos", "notes", ingredients);
-    Recipe myRecipeTwo = Recipe(2, "Pizza", "notes", ingredients);
+    Recipe myRecipeOne = Recipe("Köttbullar & Mos", "notes", ingredients);
+    Recipe myRecipeTwo = Recipe("Pizza", "notes", ingredients);
 
     var recipes = <Recipe>[];
     recipes.add(myRecipeOne);
@@ -57,11 +57,17 @@ class _MyHomePageState extends State<MyHomePage> {
             for (int i = 0; i < recipes.length; i++)
               Card(
                   child: ListTile(
-                trailing: Icon(Icons.edit_note),
+                trailing: const Icon(Icons.edit_note),
                 title: Text(recipes[i].title),
               )),
           ],
         ),
+        floatingActionButton: FloatingActionButton(
+            onPressed: () {
+              // create_recipe page
+            },
+            backgroundColor: Colors.lightBlue,
+            child: const Icon(Icons.add)),
       ),
     );
   }
