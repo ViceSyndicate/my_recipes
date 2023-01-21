@@ -37,22 +37,32 @@ class _MyHomePageState extends State<MyHomePage> {
   Widget build(BuildContext context) {
     // Get recipes from db
     List<String> ingredients = ['Ingredient1', 'Ingredient2'];
-    Recipe myRecipeOne = Recipe(1, "title", "notes", ingredients);
-    Recipe myRecipeTwo = Recipe(2, "title", "notes", ingredients);
+    Recipe myRecipeOne = Recipe(1, "Köttbullar & Mos", "notes", ingredients);
+    Recipe myRecipeTwo = Recipe(2, "Pizza", "notes", ingredients);
 
     var recipes = <Recipe>[];
     recipes.add(myRecipeOne);
     recipes.add(myRecipeTwo);
 
     // Todo: list recipes
-    return ListView.builder(
-        padding: const EdgeInsets.all(8),
-        itemCount: recipes.length,
-        itemBuilder: (BuildContext context, int index) {
-          return Container(
-            height: 50,
-            child: Center(child: Text('Entry')),
-          );
-        });
+    return MaterialApp(
+      title: 'Recipes',
+      home: Scaffold(
+        appBar: AppBar(
+          title: const Text('Recipes'),
+        ),
+        body: ListView(
+          padding: const EdgeInsets.all(10),
+          children: <Widget>[
+            for (int i = 0; i < recipes.length; i++)
+              Card(
+                  child: ListTile(
+                trailing: Icon(Icons.edit_note),
+                title: Text(recipes[i].title),
+              )),
+          ],
+        ),
+      ),
+    );
   }
 }
