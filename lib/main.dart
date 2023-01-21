@@ -1,32 +1,27 @@
-import 'package:english_words/english_words.dart';
 import 'package:flutter/material.dart';
-import 'package:provider/provider.dart';
+// ToDo
+import 'package:my_recipes/vm_create_recipe.dart';
+import 'package:my_recipes/model_recipe.dart';
 
 void main() {
-  runApp(MyApp());
+  runApp(const MyApp());
 }
 
 class MyApp extends StatelessWidget {
   const MyApp({super.key});
 
+  // This widget is the root of your application.
   @override
   Widget build(BuildContext context) {
-    return ChangeNotifierProvider(
-      create: (context) => MyAppState(),
-      child: MaterialApp(
-        title: 'Namer App',
-        theme: ThemeData(
-          useMaterial3: true,
-          colorScheme:
-              ColorScheme.fromSeed(seedColor: Colors.lightBlue.shade100),
-        ),
-        //home: MyHomePage(),
+    return MaterialApp(
+      title: 'My Recipes Demo',
+      theme: ThemeData(
+        primarySwatch: Colors.blue,
       ),
+      home: const MyHomePage(title: 'My Recipes Home Page'),
     );
   }
 }
-
-class MyAppState extends ChangeNotifier {}
 
 class MyHomePage extends StatefulWidget {
   const MyHomePage({super.key, required this.title});
@@ -40,19 +35,24 @@ class MyHomePage extends StatefulWidget {
 class _MyHomePageState extends State<MyHomePage> {
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(
-        title: Text(widget.title),
-      ),
-      body: Center(
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
-        ),
-      ),
-      floatingActionButton: FloatingActionButton(
-        onPressed: (() {}),
-        child: const Icon(Icons.add),
-      ), // This trailing comma makes auto-formatting nicer for build methods.
-    );
+    // Get recipes from db
+    List<String> ingredients = ['Ingredient1', 'Ingredient2'];
+    Recipe myRecipeOne = Recipe(1, "title", "notes", ingredients);
+    Recipe myRecipeTwo = Recipe(2, "title", "notes", ingredients);
+
+    var recipes = <Recipe>[];
+    recipes.add(myRecipeOne);
+    recipes.add(myRecipeTwo);
+
+    // Todo: list recipes
+    return ListView.builder(
+        padding: const EdgeInsets.all(8),
+        itemCount: recipes.length,
+        itemBuilder: (BuildContext context, int index) {
+          return Container(
+            height: 50,
+            child: Center(child: Text('Entry')),
+          );
+        });
   }
 }
