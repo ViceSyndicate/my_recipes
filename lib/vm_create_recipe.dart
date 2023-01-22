@@ -50,29 +50,46 @@ class MyCustomFormState extends State<MyCustomForm> {
       key: _formKey,
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          Padding(
-            padding: const EdgeInsets.all(8),
+        children: <Widget>[
+          Container(
+            alignment: Alignment.center,
+            width: double.infinity,
+            child: Text(
+              'Register',
+              style: TextStyle(fontSize: 18.0, color: Colors.black),
+            ),
+          ), // title: login
+          Container(
+            child: TextFormField(
+              keyboardType: TextInputType.text,
+              textInputAction: TextInputAction.next,
+              onFieldSubmitted: (String value) {},
+              decoration: InputDecoration(
+                  labelText: 'Recipe Name',
+                  //prefixIcon: Icon(Icons.email),
+                  icon: Icon(Icons.perm_identity)),
+            ),
           ),
-          TextFormField(
-            decoration: const InputDecoration(labelText: 'Recipe Name'),
-            // The validator receives the text that the user has entered.
-            validator: (value) {
-              if (value == null || value.isEmpty) {
-                return 'Please enter some text';
-              }
-              return null;
-            },
+          Container(
+            child: TextFormField(
+              keyboardType: TextInputType.text,
+              textInputAction: TextInputAction.next,
+              onFieldSubmitted: (String value) {},
+              decoration: InputDecoration(
+                  labelText: 'Recipe Notes',
+                  //prefixIcon: Icon(Icons.email),
+                  icon: Icon(Icons.perm_identity)),
+            ),
           ),
-          TextFormField(
-            decoration: const InputDecoration(labelText: 'Recipe Notes'),
-            // The validator receives the text that the user has entered.
-            validator: (value) {
-              if (value == null || value.isEmpty) {
-                return 'Please enter some text';
-              }
-              return null;
-            },
+          Container(
+            child: TextFormField(
+              keyboardType: TextInputType.text,
+              textInputAction: TextInputAction.next,
+              onFieldSubmitted: (String value) {},
+              decoration: InputDecoration(
+                labelText: 'Recipe Ingredients',
+              ),
+            ),
           ),
         ],
       ),
@@ -80,31 +97,5 @@ class MyCustomFormState extends State<MyCustomForm> {
   }
 }
 
-
+// https://blog.devgenius.io/add-remove-textformfields-dynamically-in-flutter-5bef6948e778
 //Navigator.pop(context);
-
-/*
-return Column(
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: <Widget>[
-        const Padding(
-          padding: EdgeInsets.symmetric(horizontal: 8, vertical: 16),
-          child: TextField(
-            decoration: InputDecoration(
-              border: OutlineInputBorder(),
-              hintText: 'Enter a search term',
-            ),
-          ),
-        ),
-        Padding(
-          padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 16),
-          child: TextFormField(
-            decoration: const InputDecoration(
-              border: UnderlineInputBorder(),
-              labelText: 'Enter your username',
-            ),
-          ),
-        ),
-      ],
-    );
-*/
