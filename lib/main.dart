@@ -32,65 +32,6 @@ class MyHomePage extends StatefulWidget {
 }
 
 class _MyHomePageState extends State<MyHomePage> {
-  var selectedIndex = 0;
-  @override
-  Widget build(BuildContext context) {
-    Widget page;
-    switch (selectedIndex) {
-      case 0:
-        page = RecipesPage();
-        break;
-      case 1:
-        page = Placeholder();
-        break;
-      default:
-        throw UnimplementedError('no widget for $selectedIndex');
-    }
-
-    return LayoutBuilder(builder: (context, constraints) {
-      return Scaffold(
-        body: Row(
-          children: [
-            SafeArea(
-              child: NavigationRail(
-                extended: constraints.maxWidth >= 600,
-                destinations: [
-                  NavigationRailDestination(
-                    icon: Icon(Icons.home),
-                    label: Text('Home'),
-                  ),
-                  NavigationRailDestination(
-                    icon: Icon(Icons.favorite),
-                    label: Text('Favorites'),
-                  ),
-                ],
-                selectedIndex: selectedIndex,
-                onDestinationSelected: (value) {
-                  setState(() {
-                    selectedIndex = value;
-                  });
-                },
-              ),
-            ),
-            Expanded(
-              child: Container(
-                color: Theme.of(context).colorScheme.primaryContainer,
-                child: page,
-              ),
-            ),
-          ],
-        ),
-      );
-    });
-  }
-}
-
-class RecipesPage extends StatefulWidget {
-  @override
-  State<RecipesPage> createState() => _RecipesPageState();
-}
-
-class _RecipesPageState extends State<RecipesPage> {
   @override
   Widget build(BuildContext context) {
     // Get recipes from db
@@ -102,6 +43,7 @@ class _RecipesPageState extends State<RecipesPage> {
     recipes.add(myRecipeOne);
     recipes.add(myRecipeTwo);
 
+    // Todo: list recipes
     return MaterialApp(
       title: 'Recipes',
       home: Scaffold(
@@ -122,11 +64,14 @@ class _RecipesPageState extends State<RecipesPage> {
         floatingActionButton: FloatingActionButton(
             onPressed: () {
               // create_recipe page
+              Navigator.push(
+                context,
+                MaterialPageRoute(builder: (context) => RecipeFormPage()),
+              );
             },
             backgroundColor: Colors.lightBlue,
             child: const Icon(Icons.add)),
       ),
     );
-    //return Placeholder();
   }
 }
