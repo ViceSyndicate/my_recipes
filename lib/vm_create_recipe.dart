@@ -67,27 +67,28 @@ class MyCustomFormState extends State<MyCustomForm> {
               decoration: InputDecoration(
                   labelText: 'Recipe Name',
                   //prefixIcon: Icon(Icons.email),
-                  icon: Icon(Icons.perm_identity)),
+                  icon: Icon(Icons.format_align_left)),
             ),
           ),
           Container(
             child: TextFormField(
-              keyboardType: TextInputType.text,
-              textInputAction: TextInputAction.next,
+              keyboardType: TextInputType.multiline,
+              maxLines: null,
               onFieldSubmitted: (String value) {},
               decoration: InputDecoration(
                   labelText: 'Recipe Notes',
-                  //prefixIcon: Icon(Icons.email),
-                  icon: Icon(Icons.perm_identity)),
+                  icon: Icon(Icons.format_align_left)),
             ),
           ),
           Container(
             child: TextFormField(
-              keyboardType: TextInputType.text,
+              keyboardType: TextInputType.multiline,
+              maxLines: null,
               textInputAction: TextInputAction.next,
               onFieldSubmitted: (String value) {},
               decoration: InputDecoration(
                 labelText: 'Recipe Ingredients',
+                icon: Icon(Icons.format_align_left),
               ),
             ),
           ),
@@ -98,4 +99,3 @@ class MyCustomFormState extends State<MyCustomForm> {
 }
 
 // https://blog.devgenius.io/add-remove-textformfields-dynamically-in-flutter-5bef6948e778
-//Navigator.pop(context);
