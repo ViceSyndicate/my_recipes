@@ -1,3 +1,5 @@
+// ignore_for_file: unnecessary_const
+
 import 'package:flutter/material.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:my_recipes/model_recipe.dart';
@@ -45,39 +47,67 @@ class MyCustomFormState extends State<MyCustomForm> {
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: <Widget>[
+            Padding(padding: EdgeInsets.all(3)),
             TextFormField(
+              onSaved: (String? value) {},
+              validator: (String? value) {
+                return value;
+              },
               keyboardType: TextInputType.text,
               textInputAction: TextInputAction.next,
               onFieldSubmitted: (String value) {},
               decoration: const InputDecoration(
+                  contentPadding: EdgeInsets.all(10),
                   labelText: 'Recipe Name',
+                  border: OutlineInputBorder(
+                      borderRadius: const BorderRadius.all(
+                    const Radius.circular(10.0),
+                  )),
                   icon: Icon(Icons.format_align_left)),
             ),
+            Padding(padding: EdgeInsets.all(3)),
             TextFormField(
               keyboardType: TextInputType.multiline,
               maxLines: null,
               onFieldSubmitted: (String value) {},
               decoration: const InputDecoration(
+                  contentPadding: EdgeInsets.all(10),
                   labelText: 'Recipe Ingredients',
+                  border: OutlineInputBorder(
+                      borderRadius: const BorderRadius.all(
+                    const Radius.circular(10.0),
+                  )),
                   icon: Icon(Icons.format_align_left)),
             ),
+            Padding(padding: EdgeInsets.all(3)),
             TextFormField(
               keyboardType: TextInputType.multiline,
               maxLines: null,
               textInputAction: TextInputAction.next,
               onFieldSubmitted: (String value) {},
               decoration: const InputDecoration(
+                contentPadding: EdgeInsets.all(10),
                 labelText: 'Recipe Instructions',
+                border: OutlineInputBorder(
+                    borderRadius: const BorderRadius.all(
+                  const Radius.circular(10.0),
+                )),
                 icon: Icon(Icons.format_align_left),
               ),
             ),
+            Padding(padding: EdgeInsets.all(3)),
             TextFormField(
               keyboardType: TextInputType.multiline,
               maxLines: null,
               textInputAction: TextInputAction.next,
               onFieldSubmitted: (String value) {},
               decoration: const InputDecoration(
+                contentPadding: EdgeInsets.all(10),
                 labelText: 'Recipe Notes',
+                border: OutlineInputBorder(
+                    borderRadius: const BorderRadius.all(
+                  const Radius.circular(10.0),
+                )),
                 icon: Icon(Icons.format_align_left),
               ),
             ),
