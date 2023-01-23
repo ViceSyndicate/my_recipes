@@ -35,9 +35,11 @@ class _MyHomePageState extends State<MyHomePage> {
   @override
   Widget build(BuildContext context) {
     // Get recipes from db
-    List<String> ingredients = ['Ingredient1', 'Ingredient2'];
-    Recipe myRecipeOne = Recipe("Köttbullar & Mos", "notes", ingredients);
-    Recipe myRecipeTwo = Recipe("Pizza", "notes", ingredients);
+
+    Recipe myRecipeOne =
+        Recipe("Köttbullar & Mos", "Ingredients", "Instructions", "Notes");
+    Recipe myRecipeTwo =
+        Recipe("Pizza", "Ingredients", "Instructions", "Notes");
 
     var recipes = <Recipe>[];
     recipes.add(myRecipeOne);
@@ -61,6 +63,7 @@ class _MyHomePageState extends State<MyHomePage> {
               )),
           ],
         ),
+        floatingActionButtonLocation: FloatingActionButtonLocation.endFloat,
         floatingActionButton: FloatingActionButton(
             onPressed: () {
               // create_recipe page

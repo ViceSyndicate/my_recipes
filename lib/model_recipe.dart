@@ -1,9 +1,10 @@
 class Recipe {
   //int id;
   String title;
+  String ingredients;
+  String instructions;
   String notes;
-  List<String> ingredients;
 
   // Constructor
-  Recipe(this.title, this.notes, this.ingredients);
+  Recipe(this.title, this.ingredients, this.instructions, this.notes);
 }

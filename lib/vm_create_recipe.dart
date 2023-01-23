@@ -3,6 +3,8 @@ import 'package:flutter/cupertino.dart';
 import 'package:my_recipes/model_recipe.dart';
 
 class RecipeFormPage extends StatelessWidget {
+  const RecipeFormPage({super.key});
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -10,15 +12,6 @@ class RecipeFormPage extends StatelessWidget {
           title: const Text('Back to Recipes'),
           backgroundColor: Colors.blueAccent),
       body: const MyCustomForm(),
-      floatingActionButton: FloatingActionButton(
-          onPressed: () {
-            // create_recipe page
-            Navigator.pop(
-              context,
-            );
-          },
-          backgroundColor: Colors.lightBlue,
-          child: const Icon(Icons.save)),
     );
   }
 }
@@ -46,53 +39,61 @@ class MyCustomFormState extends State<MyCustomForm> {
   @override
   Widget build(BuildContext context) {
     // Build a Form widget using the _formKey created above.
-    return Form(
-      key: _formKey,
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: <Widget>[
-          Container(
-            alignment: Alignment.center,
-            width: double.infinity,
-            child: Text(
-              'Register',
-              style: TextStyle(fontSize: 18.0, color: Colors.black),
-            ),
-          ), // title: login
-          Container(
-            child: TextFormField(
+    return Scaffold(
+      body: Form(
+        key: _formKey,
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: <Widget>[
+            TextFormField(
               keyboardType: TextInputType.text,
               textInputAction: TextInputAction.next,
               onFieldSubmitted: (String value) {},
-              decoration: InputDecoration(
+              decoration: const InputDecoration(
                   labelText: 'Recipe Name',
-                  //prefixIcon: Icon(Icons.email),
                   icon: Icon(Icons.format_align_left)),
             ),
-          ),
-          Container(
-            child: TextFormField(
+            TextFormField(
               keyboardType: TextInputType.multiline,
               maxLines: null,
               onFieldSubmitted: (String value) {},
-              decoration: InputDecoration(
-                  labelText: 'Recipe Notes',
+              decoration: const InputDecoration(
+                  labelText: 'Recipe Ingredients',
                   icon: Icon(Icons.format_align_left)),
             ),
-          ),
-          Container(
-            child: TextFormField(
+            TextFormField(
               keyboardType: TextInputType.multiline,
               maxLines: null,
               textInputAction: TextInputAction.next,
               onFieldSubmitted: (String value) {},
-              decoration: InputDecoration(
-                labelText: 'Recipe Ingredients',
+              decoration: const InputDecoration(
+                labelText: 'Recipe Instructions',
                 icon: Icon(Icons.format_align_left),
               ),
             ),
-          ),
-        ],
+            TextFormField(
+              keyboardType: TextInputType.multiline,
+              maxLines: null,
+              textInputAction: TextInputAction.next,
+              onFieldSubmitted: (String value) {},
+              decoration: const InputDecoration(
+                labelText: 'Recipe Notes',
+                icon: Icon(Icons.format_align_left),
+              ),
+            ),
+          ],
+        ),
+      ),
+      floatingActionButtonLocation: FloatingActionButtonLocation.endFloat,
+      floatingActionButton: FloatingActionButton(
+        tooltip: 'Save',
+        onPressed: () {
+          // Save form data
+          Navigator.pop(
+            context,
+          );
+        },
+        child: const Icon(Icons.save),
       ),
     );
   }
