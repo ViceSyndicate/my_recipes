@@ -41,6 +41,8 @@ class MyCustomFormState extends State<MyCustomForm> {
   @override
   Widget build(BuildContext context) {
     // Build a Form widget using the _formKey created above.
+    final TextEditingController firstNameController = TextEditingController();
+
     return Scaffold(
       body: Form(
         key: _formKey,
@@ -53,6 +55,7 @@ class MyCustomFormState extends State<MyCustomForm> {
               validator: (String? value) {
                 return value;
               },
+              controller: firstNameController,
               keyboardType: TextInputType.text,
               textInputAction: TextInputAction.next,
               onFieldSubmitted: (String value) {},
@@ -119,6 +122,7 @@ class MyCustomFormState extends State<MyCustomForm> {
         tooltip: 'Save',
         onPressed: () {
           // Save form data
+          print(firstNameController.text);
           Navigator.pop(
             context,
           );
