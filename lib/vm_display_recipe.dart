@@ -3,16 +3,16 @@ import 'package:flutter/cupertino.dart';
 import 'package:my_recipes/model_recipe.dart';
 
 class DisplayRecipePage extends StatelessWidget {
-  const DisplayRecipePage({super.key});
+  const DisplayRecipePage(this.recipe, {super.key});
+  final Recipe recipe;
 
   @override
   Widget build(BuildContext context) {
-    print(context);
     return Scaffold(
       appBar: AppBar(
         title: const Text('Display Recipe Page'),
       ),
-      body: Center(),
+      body: Center(), // Put recipe variables in me
       floatingActionButtonLocation: FloatingActionButtonLocation.endFloat,
       floatingActionButton: FloatingActionButton(
         tooltip: 'Back',
