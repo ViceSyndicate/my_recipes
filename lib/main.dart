@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:my_recipes/vm_create_recipe.dart';
 import 'package:my_recipes/model_recipe.dart';
+import 'package:my_recipes/vm_display_recipe.dart';
 
 void main() {
   runApp(const MyApp());
@@ -53,13 +54,19 @@ class _MyHomePageState extends State<MyHomePage> {
           title: const Text('Recipes'),
         ),
         body: ListView(
-          padding: const EdgeInsets.all(10),
+          padding: const EdgeInsets.all(5),
           children: <Widget>[
             for (int i = 0; i < recipes.length; i++)
               Card(
                   child: ListTile(
                 trailing: const Icon(Icons.edit_note),
                 title: Text(recipes[i].title),
+                onTap: () => {
+                  Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                          builder: (context) => const DisplayRecipePage()))
+                }, // new display page
               )),
           ],
         ),
