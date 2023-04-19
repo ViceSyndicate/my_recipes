@@ -11,8 +11,8 @@ class RecipeFormPage extends StatelessWidget {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-          title: const Text('Back to Recipes'),
-          backgroundColor: Colors.blueAccent),
+        title: const Text('Back to Recipes'),
+      ),
       body: const MyCustomForm(),
     );
   }

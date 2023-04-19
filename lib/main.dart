@@ -16,9 +16,8 @@ class MyApp extends StatelessWidget {
     return MaterialApp(
       title: 'My Recipes Demo',
       theme: ThemeData(
-          primarySwatch: Colors.blue,
-          scaffoldBackgroundColor: Colors.black,
-          backgroundColor: Colors.black),
+        brightness: Brightness.dark,
+      ),
       home: const MyHomePage(title: 'My Recipes Home Page'),
     );
   }
@@ -48,28 +47,25 @@ class _MyHomePageState extends State<MyHomePage> {
     recipes.add(myRecipeTwo);
 
     // Todo: list recipes
-    return MaterialApp(
-      title: 'Recipes',
-      home: Scaffold(
-        appBar: AppBar(
-          title: const Text('Recipes'),
-        ),
-        body: ListView.builder(
-          itemCount: recipes.length,
-          itemBuilder: (context, index) {
-            return RecipeListItem(recipes[index]);
-          },
-        ),
-        floatingActionButton: FloatingActionButton(
-            onPressed: () {
-              Navigator.push(
-                  context,
-                  MaterialPageRoute(
-                      builder: (context) => const RecipeFormPage()));
-            },
-            backgroundColor: Colors.lightBlue,
-            child: const Icon(Icons.add)),
+    return Scaffold(
+      appBar: AppBar(
+        title: const Text('Recipes'),
       ),
+      body: ListView.builder(
+        itemCount: recipes.length,
+        itemBuilder: (context, index) {
+          return RecipeListItem(recipes[index]);
+        },
+      ),
+      floatingActionButton: FloatingActionButton(
+          onPressed: () {
+            Navigator.push(
+                context,
+                MaterialPageRoute(
+                    builder: (context) => const RecipeFormPage()));
+          },
+          backgroundColor: Colors.lightBlue,
+          child: const Icon(Icons.add)),
     );
   }
 }
@@ -86,6 +82,7 @@ class _RecipeListItemState extends State<RecipeListItem> {
   @override
   Widget build(BuildContext context) {
     return ListTile(
+      textColor: Colors.white,
       title: Text(widget.recipe.title),
       subtitle: Text(widget.recipe.ingredients.join(', ')),
       onTap: () => {
@@ -95,5 +92,20 @@ class _RecipeListItemState extends State<RecipeListItem> {
                 builder: (context) => DisplayRecipePage(widget.recipe)))
       }, // new dis
     );
+  }
+}
+
+class MyColor extends MaterialStateColor {
+  const MyColor() : super(_defaultColor);
+
+  static const int _defaultColor = 0xcafefeed;
+  static const int _pressedColor = 0xdeadbeef;
+
+  @override
+  Color resolve(Set<MaterialState> states) {
+    if (states.contains(MaterialState.pressed)) {
+      return const Color(_pressedColor);
+    }
+    return const Color(_defaultColor);
   }
 }
