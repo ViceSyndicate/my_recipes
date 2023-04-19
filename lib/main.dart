@@ -16,8 +16,9 @@ class MyApp extends StatelessWidget {
     return MaterialApp(
       title: 'My Recipes Demo',
       theme: ThemeData(
-        primarySwatch: Colors.blue,
-      ),
+          primarySwatch: Colors.blue,
+          scaffoldBackgroundColor: Colors.black,
+          backgroundColor: Colors.black),
       home: const MyHomePage(title: 'My Recipes Home Page'),
     );
   }
@@ -36,11 +37,11 @@ class _MyHomePageState extends State<MyHomePage> {
   @override
   Widget build(BuildContext context) {
     // Get recipes from db
+    List<String> ingredients = ["Köttbullar", "Mos", "Ketchup"];
 
     Recipe myRecipeOne =
-        Recipe("Köttbullar & Mos", "Ingredients", "Instructions", "Notes");
-    Recipe myRecipeTwo =
-        Recipe("Pizza", "Ingredients", "Instructions", "Notes");
+        Recipe("Köttbullar & Mos", ingredients, "Instructions", "Notes");
+    Recipe myRecipeTwo = Recipe("Pizza", ingredients, "Instructions", "Notes");
 
     var recipes = <Recipe>[];
     recipes.add(myRecipeOne);
@@ -53,35 +54,37 @@ class _MyHomePageState extends State<MyHomePage> {
         appBar: AppBar(
           title: const Text('Recipes'),
         ),
-        body: ListView(
-          padding: const EdgeInsets.all(5),
-          children: <Widget>[
-            for (int i = 0; i < recipes.length; i++)
-              Card(
-                  child: ListTile(
-                trailing: const Icon(Icons.edit_note),
-                title: Text(recipes[i].title),
-                onTap: () => {
-                  Navigator.push(
-                      context,
-                      MaterialPageRoute(
-                          builder: (context) => const DisplayRecipePage()))
-                }, // new display page
-              )),
-          ],
+        body: ListView.builder(
+          itemCount: recipes.length,
+          itemBuilder: (context, index) {
+            return RecipeListItem(recipes[index]);
+          },
         ),
-        floatingActionButtonLocation: FloatingActionButtonLocation.endFloat,
-        floatingActionButton: FloatingActionButton(
-            onPressed: () {
-              // create_recipe page
-              Navigator.push(
-                context,
-                MaterialPageRoute(builder: (context) => RecipeFormPage()),
-              );
-            },
-            backgroundColor: Colors.lightBlue,
-            child: const Icon(Icons.add)),
       ),
+    );
+  }
+}
+
+class RecipeListItem extends StatefulWidget {
+  RecipeListItem(this.recipe);
+  final Recipe recipe;
+
+  @override
+  State<RecipeListItem> createState() => _RecipeListItemState();
+}
+
+class _RecipeListItemState extends State<RecipeListItem> {
+  @override
+  Widget build(BuildContext context) {
+    return ListTile(
+      title: Text(widget.recipe.title),
+      subtitle: Text(widget.recipe.ingredients.join(', ')),
+      onTap: () => {
+        Navigator.push(
+            context,
+            MaterialPageRoute(
+                builder: (context) => DisplayRecipePage(widget.recipe)))
+      }, // new dis
     );
   }
 }

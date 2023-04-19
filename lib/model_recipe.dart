@@ -1,7 +1,7 @@
 class Recipe {
   //int id;
   String title;
-  String ingredients;
+  List<String> ingredients;
   String instructions;
   String notes;
 
