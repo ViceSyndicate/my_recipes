@@ -60,6 +60,15 @@ class _MyHomePageState extends State<MyHomePage> {
             return RecipeListItem(recipes[index]);
           },
         ),
+        floatingActionButton: FloatingActionButton(
+            onPressed: () {
+              Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                      builder: (context) => const RecipeFormPage()));
+            },
+            backgroundColor: Colors.lightBlue,
+            child: const Icon(Icons.add)),
       ),
     );
   }
