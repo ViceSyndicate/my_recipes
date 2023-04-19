@@ -3,7 +3,7 @@ import 'package:flutter/cupertino.dart';
 import 'package:my_recipes/model_recipe.dart';
 
 class DisplayRecipePage extends StatelessWidget {
-  const DisplayRecipePage(this.recipe);
+  const DisplayRecipePage(this.recipe, {super.key});
 
   final Recipe recipe;
 
