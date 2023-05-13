@@ -38,11 +38,35 @@ class MyCustomFormState extends State<MyCustomForm> {
   // not a GlobalKey<MyCustomFormState>.
   final _formKey = GlobalKey<FormState>();
 
+  final TextEditingController _titleController = TextEditingController();
+  final List<TextEditingController> _ingredientControllers = [];
+  final TextEditingController _instructionsController = TextEditingController();
+  final TextEditingController _notesController = TextEditingController();
+
+  void _addIngredientField() {
+    setState(() {
+      _ingredientControllers.add(TextEditingController());
+    });
+  }
+
+  void _removeIngredientField(int index) {
+    setState(() {
+      _ingredientControllers.removeAt(index);
+    });
+  }
+
+  @override
+  void dispose() {
+    _titleController.dispose();
+    _ingredientControllers.forEach((controller) => controller.dispose());
+    _instructionsController.dispose();
+    _notesController.dispose();
+    super.dispose();
+  }
+
   @override
   Widget build(BuildContext context) {
     // Build a Form widget using the _formKey created above.
-    final TextEditingController firstNameController = TextEditingController();
-
     return Scaffold(
       body: Form(
         key: _formKey,
@@ -53,12 +77,15 @@ class MyCustomFormState extends State<MyCustomForm> {
             TextFormField(
               onSaved: (String? value) {},
               validator: (String? value) {
-                return value;
+                if (value == null || value.isEmpty) {
+                  return 'Please enter a recipe name';
+                }
+                return null;
               },
-              controller: firstNameController,
               keyboardType: TextInputType.text,
               textInputAction: TextInputAction.next,
               onFieldSubmitted: (String value) {},
+              controller: _titleController,
               decoration: const InputDecoration(
                   contentPadding: EdgeInsets.all(10),
                   labelText: 'Recipe Name',
@@ -69,24 +96,50 @@ class MyCustomFormState extends State<MyCustomForm> {
                   icon: Icon(Icons.format_align_left)),
             ),
             Padding(padding: EdgeInsets.all(3)),
-            TextFormField(
-              keyboardType: TextInputType.multiline,
-              maxLines: null,
-              onFieldSubmitted: (String value) {},
-              decoration: const InputDecoration(
-                  contentPadding: EdgeInsets.all(10),
-                  labelText: 'Recipe Ingredients',
-                  border: OutlineInputBorder(
-                      borderRadius: const BorderRadius.all(
-                    const Radius.circular(10.0),
-                  )),
-                  icon: Icon(Icons.format_align_left)),
+            ..._ingredientControllers.asMap().entries.map((entry) {
+              final index = entry.key;
+              final controller = entry.value;
+              return Row(
+                children: [
+                  Expanded(
+                    child: TextFormField(
+                      keyboardType: TextInputType.text,
+                      textInputAction: TextInputAction.next,
+                      onFieldSubmitted: (String value) {},
+                      controller: controller,
+                      decoration: InputDecoration(
+                          contentPadding: EdgeInsets.all(10),
+                          labelText: 'Ingredient ${index + 1}',
+                          border: OutlineInputBorder(
+                              borderRadius: const BorderRadius.all(
+                            const Radius.circular(10.0),
+                          )),
+                          icon: Icon(Icons.format_align_left)),
+                    ),
+                  ),
+                  IconButton(
+                    icon: Icon(Icons.remove_circle_outline),
+                    onPressed: () => _removeIngredientField(index),
+                  ),
+                ],
+              );
+            }).toList(),
+            Row(
+              children: [
+                Expanded(
+                  child: TextButton(
+                    child: Text('Add ingredient'),
+                    onPressed: _addIngredientField,
+                  ),
+                ),
+              ],
             ),
             Padding(padding: EdgeInsets.all(3)),
             TextFormField(
               keyboardType: TextInputType.multiline,
               maxLines: null,
               textInputAction: TextInputAction.next,
+              controller: _instructionsController,
               onFieldSubmitted: (String value) {},
               decoration: const InputDecoration(
                 contentPadding: EdgeInsets.all(10),
@@ -104,6 +157,7 @@ class MyCustomFormState extends State<MyCustomForm> {
               maxLines: null,
               textInputAction: TextInputAction.next,
               onFieldSubmitted: (String value) {},
+              controller: _notesController,
               decoration: const InputDecoration(
                 contentPadding: EdgeInsets.all(10),
                 labelText: 'Recipe Notes',
@@ -121,8 +175,15 @@ class MyCustomFormState extends State<MyCustomForm> {
       floatingActionButton: FloatingActionButton(
         tooltip: 'Save',
         onPressed: () {
-          // Save form data
-          print(firstNameController.text);
+          List<String> ingredients = [];
+          for (var element in _ingredientControllers) {
+            print(element.text);
+            ingredients.add(element.text);
+          }
+
+          final recipe = Recipe(_titleController.text, ingredients,
+              _instructionsController.text, _notesController.text);
+          print(_titleController.text);
           Navigator.pop(
             context,
           );
