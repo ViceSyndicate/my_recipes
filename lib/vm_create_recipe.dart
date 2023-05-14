@@ -3,6 +3,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:my_recipes/model_recipe.dart';
+import 'package:my_recipes/db_logic.dart';
 
 class RecipeFormPage extends StatelessWidget {
   const RecipeFormPage({super.key});
@@ -174,16 +175,19 @@ class MyCustomFormState extends State<MyCustomForm> {
       floatingActionButtonLocation: FloatingActionButtonLocation.endFloat,
       floatingActionButton: FloatingActionButton(
         tooltip: 'Save',
-        onPressed: () {
+        onPressed: () async {
           List<String> ingredients = [];
           for (var element in _ingredientControllers) {
             print(element.text);
             ingredients.add(element.text);
           }
 
-          final recipe = Recipe(_titleController.text, ingredients,
-              _instructionsController.text, _notesController.text);
-          print(_titleController.text);
+          final recipe = Recipe(
+              title: _titleController.text,
+              ingredients: ingredients,
+              instructions: _instructionsController.text,
+              notes: _notesController.text);
+          await saveRecipe(recipe);
           Navigator.pop(
             context,
           );

@@ -3,6 +3,8 @@ import 'package:my_recipes/vm_create_recipe.dart';
 import 'package:my_recipes/model_recipe.dart';
 import 'package:my_recipes/vm_display_recipe.dart';
 
+import 'db_logic.dart';
+
 void main() {
   runApp(const MyApp());
 }
@@ -33,29 +35,32 @@ class MyHomePage extends StatefulWidget {
 }
 
 class _MyHomePageState extends State<MyHomePage> {
+  //Future<List<Recipe>> _recipesFuture = await getRecipes();
+
   @override
   Widget build(BuildContext context) {
-    // Get recipes from db
-    List<String> ingredients = ["Köttbullar", "Mos", "Ketchup"];
-
-    Recipe myRecipeOne =
-        Recipe("Köttbullar & Mos", ingredients, "Instructions", "Notes");
-    Recipe myRecipeTwo = Recipe("Pizza", ingredients, "Instructions", "Notes");
-
-    var recipes = <Recipe>[];
-    recipes.add(myRecipeOne);
-    recipes.add(myRecipeTwo);
-
-    // Todo: list recipes
     return Scaffold(
       appBar: AppBar(
         title: const Text('Recipes'),
       ),
-      body: ListView.builder(
-        itemCount: recipes.length,
-        itemBuilder: (context, index) {
-          return RecipeListItem(recipes[index]);
-        },
+      body: FutureBuilder<List<Recipe>>(
+        future: getRecipes(),
+        builder: ((context, snapshot) {
+          if (snapshot.hasData) {
+            final recipes = snapshot.data!;
+            return ListView.builder(
+              itemCount: recipes.length,
+              itemBuilder: (context, index) {
+                return RecipeListItem(recipes[index]);
+              },
+            );
+          } else if (snapshot.hasError) {
+            return Center(
+                child: Text("Error fetching recipes: ${snapshot.error}"));
+          } else {
+            return Center(child: CircularProgressIndicator());
+          }
+        }),
       ),
       floatingActionButton: FloatingActionButton(
           onPressed: () {
