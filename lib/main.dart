@@ -35,7 +35,7 @@ class MyHomePage extends StatefulWidget {
 }
 
 class _MyHomePageState extends State<MyHomePage> {
-  //Future<List<Recipe>> _recipesFuture = await getRecipes();
+  Future<List<Recipe>> _futureRecipes = getRecipes();
 
   @override
   Widget build(BuildContext context) {
@@ -58,16 +58,23 @@ class _MyHomePageState extends State<MyHomePage> {
             return Center(
                 child: Text("Error fetching recipes: ${snapshot.error}"));
           } else {
-            return Center(child: CircularProgressIndicator());
+            return const Center(child: CircularProgressIndicator());
           }
         }),
       ),
       floatingActionButton: FloatingActionButton(
-          onPressed: () {
-            Navigator.push(
+          onPressed: () async {
+            // Navigate to RecipeFormPage and wait for result
+            await Navigator.push(
                 context,
                 MaterialPageRoute(
                     builder: (context) => const RecipeFormPage()));
+
+            // If a new recipe was added, update the list of recipes
+
+            setState(() {
+              _futureRecipes = getRecipes();
+            });
           },
           backgroundColor: Colors.lightBlue,
           child: const Icon(Icons.add)),
@@ -95,7 +102,18 @@ class _RecipeListItemState extends State<RecipeListItem> {
             context,
             MaterialPageRoute(
                 builder: (context) => DisplayRecipePage(widget.recipe)))
-      }, // new dis
+      },
+      trailing: IconButton(
+        icon: Icon(Icons.delete),
+        onPressed: () {
+          // Perform delete operation here
+          print('START del func');
+          deleteRecipe(widget.recipe);
+          print('END del func');
+          // Trigger UI update by calling setState
+          setState(() {});
+        },
+      ),
     );
   }
 }

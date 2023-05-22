@@ -20,7 +20,6 @@ Future<List<Recipe>> getRecipes() async {
 
   // get recipes
   final contents = await file.readAsString();
-  print(contents);
   List<dynamic> recipesJson = contents.isNotEmpty ? jsonDecode(contents) : [];
 
   List<Recipe> recipes = [];
@@ -42,6 +41,26 @@ Future<void> saveRecipe(Recipe recipe) async {
   final file = await File(filePath);
   await file.writeAsString(jsonString);
 }
+
+Future<void> saveRecipes(List<Recipe> recipes) async {
+  String jsonString = jsonEncode(recipes);
+
+  final appDocDir = await getApplicationDocumentsDirectory();
+  final filePath = '${appDocDir.path}/recipes.json';
+
+  final file = await File(filePath);
+  await file.writeAsString(jsonString);
+}
+
+Future<void> deleteRecipe(Recipe recipe) async {
+  List<Recipe> recipes = await getRecipes();
+  recipes.remove(recipe);
+
+  saveRecipes(recipes);
+}
+
+// Could write a function that simply saves a list of recipes.
+// I think that'd be less code.
 
 /*
 //Future<String> get _localPath async {

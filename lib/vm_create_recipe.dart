@@ -43,6 +43,7 @@ class MyCustomFormState extends State<MyCustomForm> {
   final List<TextEditingController> _ingredientControllers = [];
   final TextEditingController _instructionsController = TextEditingController();
   final TextEditingController _notesController = TextEditingController();
+  bool _isKeto = false;
 
   void _addIngredientField() {
     setState(() {
@@ -97,45 +98,6 @@ class MyCustomFormState extends State<MyCustomForm> {
                   icon: Icon(Icons.format_align_left)),
             ),
             Padding(padding: EdgeInsets.all(3)),
-            ..._ingredientControllers.asMap().entries.map((entry) {
-              final index = entry.key;
-              final controller = entry.value;
-              return Row(
-                children: [
-                  Expanded(
-                    child: TextFormField(
-                      keyboardType: TextInputType.text,
-                      textInputAction: TextInputAction.next,
-                      onFieldSubmitted: (String value) {},
-                      controller: controller,
-                      decoration: InputDecoration(
-                          contentPadding: EdgeInsets.all(10),
-                          labelText: 'Ingredient ${index + 1}',
-                          border: OutlineInputBorder(
-                              borderRadius: const BorderRadius.all(
-                            const Radius.circular(10.0),
-                          )),
-                          icon: Icon(Icons.format_align_left)),
-                    ),
-                  ),
-                  IconButton(
-                    icon: Icon(Icons.remove_circle_outline),
-                    onPressed: () => _removeIngredientField(index),
-                  ),
-                ],
-              );
-            }).toList(),
-            Row(
-              children: [
-                Expanded(
-                  child: TextButton(
-                    child: Text('Add ingredient'),
-                    onPressed: _addIngredientField,
-                  ),
-                ),
-              ],
-            ),
-            Padding(padding: EdgeInsets.all(3)),
             TextFormField(
               keyboardType: TextInputType.multiline,
               maxLines: null,
@@ -169,6 +131,54 @@ class MyCustomFormState extends State<MyCustomForm> {
                 icon: Icon(Icons.format_align_left),
               ),
             ),
+            Padding(padding: EdgeInsets.all(3)),
+            ..._ingredientControllers.asMap().entries.map((entry) {
+              final index = entry.key;
+              final controller = entry.value;
+              return Row(
+                children: [
+                  Expanded(
+                    child: TextFormField(
+                      keyboardType: TextInputType.text,
+                      textInputAction: TextInputAction.next,
+                      onFieldSubmitted: (String value) {},
+                      controller: controller,
+                      decoration: InputDecoration(
+                          contentPadding: EdgeInsets.all(10),
+                          labelText: 'Ingredient ${index + 1}',
+                          border: OutlineInputBorder(
+                              borderRadius: const BorderRadius.all(
+                            const Radius.circular(10.0),
+                          )),
+                          icon: Icon(Icons.format_align_left)),
+                    ),
+                  ),
+                  IconButton(
+                    icon: Icon(Icons.remove_circle_outline),
+                    onPressed: () => _removeIngredientField(index),
+                  ),
+                ],
+              );
+            }).toList(),
+            Row(
+              children: [
+                Checkbox(
+                  value: _isKeto,
+                  onChanged: (bool? value) {
+                    setState(() {
+                      _isKeto = value ?? false;
+                    });
+                  },
+                ),
+                Text('Is Keto'),
+                Expanded(
+                  child: TextButton(
+                    child: Text('Add ingredient'),
+                    onPressed: _addIngredientField,
+                  ),
+                ),
+              ],
+            ),
           ],
         ),
       ),
@@ -178,7 +188,6 @@ class MyCustomFormState extends State<MyCustomForm> {
         onPressed: () async {
           List<String> ingredients = [];
           for (var element in _ingredientControllers) {
-            print(element.text);
             ingredients.add(element.text);
           }
 
@@ -186,7 +195,8 @@ class MyCustomFormState extends State<MyCustomForm> {
               title: _titleController.text,
               ingredients: ingredients,
               instructions: _instructionsController.text,
-              notes: _notesController.text);
+              notes: _notesController.text,
+              isKeto: _isKeto);
           await saveRecipe(recipe);
           Navigator.pop(
             context,
