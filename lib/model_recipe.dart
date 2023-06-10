@@ -1,5 +1,3 @@
-import 'package:uuid/uuid.dart';
-
 class Recipe {
   String id;
   String title;
@@ -14,8 +12,8 @@ class Recipe {
       required this.ingredients,
       required this.instructions,
       required this.notes,
-      required this.isKeto})
-      : this.id = Uuid().v4();
+      required this.isKeto,
+      required this.id});
 
   factory Recipe.fromJson(Map<String, dynamic> json) {
     return Recipe(
@@ -23,7 +21,8 @@ class Recipe {
         ingredients: json['ingredients'].cast<String>(),
         instructions: json['instructions'],
         notes: json['notes'],
-        isKeto: json['isKeto']);
+        isKeto: json['isKeto'],
+        id: json['id']);
   }
 
   Map<String, dynamic> toJson() {

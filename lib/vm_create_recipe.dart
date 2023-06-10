@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:my_recipes/model_recipe.dart';
 import 'package:my_recipes/db_logic.dart';
+import 'package:uuid/uuid.dart';
 
 class RecipeFormPage extends StatelessWidget {
   const RecipeFormPage({super.key});
@@ -190,13 +191,16 @@ class MyCustomFormState extends State<MyCustomForm> {
           for (var element in _ingredientControllers) {
             ingredients.add(element.text);
           }
-
+          Uuid uuidGen = const Uuid();
+          var newId = uuidGen.v4();
           final recipe = Recipe(
-              title: _titleController.text,
-              ingredients: ingredients,
-              instructions: _instructionsController.text,
-              notes: _notesController.text,
-              isKeto: _isKeto);
+            id: newId,
+            title: _titleController.text,
+            ingredients: ingredients,
+            instructions: _instructionsController.text,
+            notes: _notesController.text,
+            isKeto: _isKeto,
+          );
           await saveRecipe(recipe);
           Navigator.pop(
             context,

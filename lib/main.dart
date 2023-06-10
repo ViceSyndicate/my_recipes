@@ -107,10 +107,10 @@ class _RecipeListItemState extends State<RecipeListItem> {
         icon: Icon(Icons.delete),
         onPressed: () {
           // Perform delete operation here
-          print('START del func');
           deleteRecipe(widget.recipe);
-          print('END del func');
+          print('deleteRecipe');
           // Trigger UI update by calling setState
+          // Issue is it doesn't update the entire files state.
           setState(() {});
         },
       ),

@@ -7,6 +7,7 @@ import 'dart:convert';
 import 'dart:io';
 import 'package:my_recipes/model_recipe.dart';
 import 'package:path_provider/path_provider.dart';
+import 'dart:async';
 
 Future<List<Recipe>> getRecipes() async {
   final appDocDir = await getApplicationDocumentsDirectory();
@@ -26,6 +27,7 @@ Future<List<Recipe>> getRecipes() async {
   for (var recipeJson in recipesJson) {
     recipes.add(Recipe.fromJson(recipeJson));
   }
+
   return recipes;
 }
 
@@ -33,6 +35,11 @@ Future<List<Recipe>> getRecipes() async {
 Future<void> saveRecipe(Recipe recipe) async {
   List<Recipe> recipes = await getRecipes();
   recipes.add(recipe);
+  /*
+  for (int i = 0; i < recipes.length; i++) {
+    print(recipes[i].id.toString());
+  }
+  */
   String jsonString = jsonEncode(recipes);
 
   final appDocDir = await getApplicationDocumentsDirectory();
@@ -54,9 +61,14 @@ Future<void> saveRecipes(List<Recipe> recipes) async {
 
 Future<void> deleteRecipe(Recipe recipe) async {
   List<Recipe> recipes = await getRecipes();
-  recipes.remove(recipe);
+  print('Id to remove: ' + recipe.id.toString());
+  recipes.removeWhere((r) => r.id == recipe.id);
 
-  saveRecipes(recipes);
+  final appDocDir = await getApplicationDocumentsDirectory();
+  final filePath = '${appDocDir.path}/recipes.json';
+  final file = File(filePath);
+
+  await file.writeAsString(jsonEncode(recipes));
 }
 
 // Could write a function that simply saves a list of recipes.
