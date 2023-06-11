@@ -1,31 +1,63 @@
 import 'package:flutter/material.dart';
-import 'package:flutter/cupertino.dart';
 import 'package:my_recipes/model_recipe.dart';
 
 class DisplayRecipePage extends StatelessWidget {
-  const DisplayRecipePage(this.recipe, {super.key});
-
   final Recipe recipe;
+
+  const DisplayRecipePage(this.recipe, {Key? key}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: const Text('Display Recipe Page'),
+        title: Text(recipe.title),
       ),
-      body: Center(
-        child: const Text('Hi there'),
-      ),
-      floatingActionButtonLocation: FloatingActionButtonLocation.endFloat,
-      floatingActionButton: FloatingActionButton(
-        tooltip: 'Back',
-        onPressed: () {
-          // Save form data
-          Navigator.pop(
-            context,
-          );
-        },
-        child: const Icon(Icons.arrow_back_rounded),
+      body: SingleChildScrollView(
+        padding: const EdgeInsets.all(16.0),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Text(
+              'Ingredients:',
+              style: TextStyle(
+                fontSize: 18,
+                fontWeight: FontWeight.bold,
+              ),
+            ),
+            SizedBox(height: 8),
+            Text(recipe.ingredients.join(', ')),
+            SizedBox(height: 16),
+            Text(
+              'Instructions:',
+              style: TextStyle(
+                fontSize: 18,
+                fontWeight: FontWeight.bold,
+              ),
+            ),
+            SizedBox(height: 8),
+            Text(recipe.instructions),
+            SizedBox(height: 16),
+            Text(
+              'Notes:',
+              style: TextStyle(
+                fontSize: 18,
+                fontWeight: FontWeight.bold,
+              ),
+            ),
+            SizedBox(height: 8),
+            Text(recipe.notes),
+            SizedBox(height: 16),
+            Text(
+              'Is Keto:',
+              style: TextStyle(
+                fontSize: 18,
+                fontWeight: FontWeight.bold,
+              ),
+            ),
+            SizedBox(height: 8),
+            Text(recipe.isKeto ? 'Yes' : 'No'),
+          ],
+        ),
       ),
     );
   }

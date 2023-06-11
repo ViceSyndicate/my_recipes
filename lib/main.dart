@@ -2,7 +2,6 @@ import 'package:flutter/material.dart';
 import 'package:my_recipes/vm_create_recipe.dart';
 import 'package:my_recipes/model_recipe.dart';
 import 'package:my_recipes/vm_display_recipe.dart';
-
 import 'db_logic.dart';
 
 void main() {
@@ -35,7 +34,9 @@ class MyHomePage extends StatefulWidget {
 }
 
 class _MyHomePageState extends State<MyHomePage> {
-  Future<List<Recipe>> _futureRecipes = getRecipes();
+  void updateRecipes() {
+    setState(() {});
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -51,7 +52,10 @@ class _MyHomePageState extends State<MyHomePage> {
             return ListView.builder(
               itemCount: recipes.length,
               itemBuilder: (context, index) {
-                return RecipeListItem(recipes[index]);
+                return RecipeListItem(
+                  recipes[index],
+                  updateRecipes,
+                );
               },
             );
           } else if (snapshot.hasError) {
@@ -72,9 +76,7 @@ class _MyHomePageState extends State<MyHomePage> {
 
             // If a new recipe was added, update the list of recipes
 
-            setState(() {
-              _futureRecipes = getRecipes();
-            });
+            setState(() {});
           },
           backgroundColor: Colors.lightBlue,
           child: const Icon(Icons.add)),
@@ -83,8 +85,11 @@ class _MyHomePageState extends State<MyHomePage> {
 }
 
 class RecipeListItem extends StatefulWidget {
-  RecipeListItem(this.recipe);
+  const RecipeListItem(this.recipe, this.onUpdate, {super.key});
   final Recipe recipe;
+  // onUpdate calls updateRecipes which calls setState()
+  // in our main Widget to update our list of recipes
+  final Function() onUpdate;
 
   @override
   State<RecipeListItem> createState() => _RecipeListItemState();
@@ -104,14 +109,10 @@ class _RecipeListItemState extends State<RecipeListItem> {
                 builder: (context) => DisplayRecipePage(widget.recipe)))
       },
       trailing: IconButton(
-        icon: Icon(Icons.delete),
+        icon: const Icon(Icons.delete),
         onPressed: () {
-          // Perform delete operation here
           deleteRecipe(widget.recipe);
-          print('deleteRecipe');
-          // Trigger UI update by calling setState
-          // Issue is it doesn't update the entire files state.
-          setState(() {});
+          widget.onUpdate();
         },
       ),
     );
