@@ -34,16 +34,52 @@ class MyHomePage extends StatefulWidget {
 }
 
 class _MyHomePageState extends State<MyHomePage> {
+  List<Recipe> recipes = [];
+
+  String filterText = '';
+  bool filterKeto = false;
   void updateRecipes() {
-    setState(() {});
+    setState(() {
+      //recipes = getFilteredRecipes();
+    });
   }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: const Text('Recipes'),
-      ),
+          title: Row(
+        children: [
+          const Text('Recipes'),
+          const SizedBox(width: 10),
+          Expanded(
+            child: TextField(
+              onChanged: (value) {
+                setState(() {
+                  filterText = value;
+                });
+              },
+              decoration: const InputDecoration(
+                labelText: 'Search',
+              ),
+            ),
+          ),
+          const SizedBox(width: 10),
+          Text('Keto'),
+          Switch(
+            value: filterKeto,
+            onChanged: (value) {
+              setState(() {
+                filterKeto = value;
+              });
+            },
+          ),
+          IconButton(
+            icon: const Icon(Icons.refresh),
+            onPressed: updateRecipes,
+          ),
+        ],
+      )),
       body: FutureBuilder<List<Recipe>>(
         future: getRecipes(),
         builder: ((context, snapshot) {
@@ -82,6 +118,22 @@ class _MyHomePageState extends State<MyHomePage> {
           child: const Icon(Icons.add)),
     );
   }
+
+  List<Recipe> getFilteredRecipes(List<Recipe> recipes) {
+    if (filterText.isEmpty && !filterKeto) {
+      return recipes; // Return all recipes when no filter is applied
+    }
+
+    return recipes.where((recipe) {
+      final titleMatch = filterText.isEmpty ||
+          recipe.title.toLowerCase().contains(filterText.toLowerCase());
+      final ingredientsMatch = filterText.isEmpty ||
+          recipe.ingredients.any((ingredient) =>
+              ingredient.toLowerCase().contains(filterText.toLowerCase()));
+      final ketoMatch = !filterKeto || recipe.isKeto;
+      return titleMatch || ingredientsMatch && ketoMatch;
+    }).toList();
+  }
 }
 
 class RecipeListItem extends StatefulWidget {
@@ -111,6 +163,8 @@ class _RecipeListItemState extends State<RecipeListItem> {
       trailing: IconButton(
         icon: const Icon(Icons.delete),
         onPressed: () {
+          /* I think I need to remake the delete button to be a future because 
+          somtimes it deletes a recipe but  */
           deleteRecipe(widget.recipe);
           widget.onUpdate();
         },

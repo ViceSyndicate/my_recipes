@@ -107,7 +107,7 @@ class MyCustomFormState extends State<MyCustomForm> {
               onFieldSubmitted: (String value) {},
               decoration: const InputDecoration(
                 contentPadding: EdgeInsets.all(10),
-                labelText: 'Recipe Instructions',
+                labelText: 'Recipe Instructions - List order of execution here',
                 border: OutlineInputBorder(
                     borderRadius: const BorderRadius.all(
                   const Radius.circular(10.0),
@@ -124,7 +124,8 @@ class MyCustomFormState extends State<MyCustomForm> {
               controller: _notesController,
               decoration: const InputDecoration(
                 contentPadding: EdgeInsets.all(10),
-                labelText: 'Recipe Notes',
+                labelText:
+                    'Recipe Notes - List how much of each ingredient here',
                 border: OutlineInputBorder(
                     borderRadius: const BorderRadius.all(
                   const Radius.circular(10.0),
@@ -140,7 +141,7 @@ class MyCustomFormState extends State<MyCustomForm> {
                 children: [
                   Expanded(
                     child: TextFormField(
-                      keyboardType: TextInputType.text,
+                      keyboardType: TextInputType.multiline,
                       textInputAction: TextInputAction.next,
                       onFieldSubmitted: (String value) {},
                       controller: controller,

@@ -17,35 +17,20 @@ class DisplayRecipePage extends StatelessWidget {
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            Text(
-              'Ingredients:',
-              style: TextStyle(
-                fontSize: 18,
-                fontWeight: FontWeight.bold,
-              ),
+            _buildSection(
+              title: 'Ingredients',
+              content: recipe.ingredients.join(', '),
             ),
-            SizedBox(height: 8),
-            Text(recipe.ingredients.join(', ')),
             SizedBox(height: 16),
-            Text(
-              'Instructions:',
-              style: TextStyle(
-                fontSize: 18,
-                fontWeight: FontWeight.bold,
-              ),
+            _buildSection(
+              title: 'Instructions',
+              content: recipe.instructions,
             ),
-            SizedBox(height: 8),
-            Text(recipe.instructions),
             SizedBox(height: 16),
-            Text(
-              'Notes:',
-              style: TextStyle(
-                fontSize: 18,
-                fontWeight: FontWeight.bold,
-              ),
+            _buildSection(
+              title: 'Notes',
+              content: recipe.notes,
             ),
-            SizedBox(height: 8),
-            Text(recipe.notes),
             SizedBox(height: 16),
             Text(
               'Is Keto:',
@@ -59,6 +44,35 @@ class DisplayRecipePage extends StatelessWidget {
           ],
         ),
       ),
+    );
+  }
+
+  Widget _buildSection({required String title, required String content}) {
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        Text(
+          title,
+          style: TextStyle(
+            fontSize: 18,
+            fontWeight: FontWeight.bold,
+          ),
+        ),
+        SizedBox(height: 8),
+        Container(
+          decoration: BoxDecoration(
+            borderRadius: BorderRadius.circular(10),
+            border: Border.all(
+              color: Colors.grey,
+              width: 1.0,
+            ),
+          ),
+          child: Padding(
+            padding: const EdgeInsets.all(16),
+            child: Text(content),
+          ),
+        ),
+      ],
     );
   }
 }
