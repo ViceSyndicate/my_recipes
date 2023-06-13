@@ -44,6 +44,24 @@ class _MyHomePageState extends State<MyHomePage> {
     });
   }
 
+  List<Recipe> filterRecipes(filterText) {
+    filterText = filterText.toLowerCase();
+    List<Recipe> filteredRecipes = [];
+
+    for (int i = 0; i < recipes.length; i++) {
+      if (recipes[i].title.contains(filterText)) {
+        filteredRecipes.add(recipes[i]);
+      }
+      // Go through all ingredients and make them lowercase
+      else {
+        for (int y = 0; y < recipes[i].ingredients.length; y++) {
+          recipes[i].ingredients[y].toLowerCase() == filterText.toLowerCase();
+        }
+      }
+    }
+    return filteredRecipes;
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -57,6 +75,8 @@ class _MyHomePageState extends State<MyHomePage> {
               onChanged: (value) {
                 setState(() {
                   filterText = value;
+                  filterRecipes(filterText);
+                  print(filterText);
                 });
               },
               decoration: const InputDecoration(
@@ -84,7 +104,10 @@ class _MyHomePageState extends State<MyHomePage> {
         future: getRecipes(),
         builder: ((context, snapshot) {
           if (snapshot.hasData) {
-            final recipes = snapshot.data!;
+            recipes = snapshot.data!;
+            if (filterText != '') {
+              recipes = filterRecipes(filterText);
+            }
             return ListView.builder(
               itemCount: recipes.length,
               itemBuilder: (context, index) {
