@@ -70,6 +70,15 @@ class MyCustomFormState extends State<MyCustomForm> {
   @override
   Widget build(BuildContext context) {
     // Build a Form widget using the _formKey created above.
+    if (_ingredientControllers.isEmpty) {
+      _addIngredientField();
+    } else {
+      final lastController = _ingredientControllers.last;
+      final lastText = lastController.text.trim();
+      if (lastText.isNotEmpty) {
+        _addIngredientField();
+      }
+    }
     return Scaffold(
       body: Form(
         key: _formKey,
@@ -145,6 +154,12 @@ class MyCustomFormState extends State<MyCustomForm> {
                       textInputAction: TextInputAction.next,
                       onFieldSubmitted: (String value) {},
                       controller: controller,
+                      onChanged: (value) {
+                        print(value);
+                        if (value == _ingredientControllers.last.text) {
+                          _addIngredientField();
+                        }
+                      },
                       decoration: InputDecoration(
                           contentPadding: EdgeInsets.all(10),
                           labelText: 'Ingredient ${index + 1}',
@@ -173,12 +188,14 @@ class MyCustomFormState extends State<MyCustomForm> {
                   },
                 ),
                 Text('Is Keto'),
+                /*
                 Expanded(
                   child: TextButton(
                     child: Text('Add ingredient'),
                     onPressed: _addIngredientField,
                   ),
                 ),
+                */
               ],
             ),
           ],
