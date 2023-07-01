@@ -111,7 +111,7 @@ class MyCustomFormState extends State<MyCustomForm> {
             TextFormField(
               keyboardType: TextInputType.multiline,
               maxLines: null,
-              textInputAction: TextInputAction.next,
+              textInputAction: TextInputAction.newline,
               controller: _instructionsController,
               onFieldSubmitted: (String value) {},
               decoration: const InputDecoration(
@@ -128,7 +128,7 @@ class MyCustomFormState extends State<MyCustomForm> {
             TextFormField(
               keyboardType: TextInputType.multiline,
               maxLines: null,
-              textInputAction: TextInputAction.next,
+              textInputAction: TextInputAction.newline,
               onFieldSubmitted: (String value) {},
               controller: _notesController,
               decoration: const InputDecoration(
@@ -155,7 +155,6 @@ class MyCustomFormState extends State<MyCustomForm> {
                       onFieldSubmitted: (String value) {},
                       controller: controller,
                       onChanged: (value) {
-                        print(value);
                         if (value == _ingredientControllers.last.text) {
                           _addIngredientField();
                         }
