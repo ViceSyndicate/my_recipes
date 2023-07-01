@@ -199,7 +199,10 @@ class _RecipeListItemState extends State<RecipeListItem> {
           /* I think I need to remake the delete button to be a future because 
           somtimes it deletes a recipe but  */
           deleteRecipe(widget.recipe);
-          widget.onUpdate();
+          // Dirty fix to remove the need to use refresh button
+          // When the UI doesn't update properly.
+          Future.delayed(const Duration(milliseconds: 10))
+              .then((value) => {widget.onUpdate()});
         },
       ),
     );
