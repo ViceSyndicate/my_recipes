@@ -82,8 +82,9 @@ class MyCustomFormState extends State<MyCustomForm> {
     return Scaffold(
       body: Form(
         key: _formKey,
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
+        child: ListView(
+          //crossAxisAlignment: CrossAxisAlignment.start,
+          shrinkWrap: true,
           children: <Widget>[
             Padding(padding: EdgeInsets.all(3)),
             TextFormField(
