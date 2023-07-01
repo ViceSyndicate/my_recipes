@@ -37,29 +37,31 @@ class _MyHomePageState extends State<MyHomePage> {
   List<Recipe> recipes = [];
 
   String filterText = '';
-  bool filterKeto = false;
+  bool isKeto = false;
   void updateRecipes() {
-    setState(() {
-      //recipes = getFilteredRecipes();
-    });
+    setState(() {});
   }
 
+  // Note to self: Study this code.
   List<Recipe> filterRecipes(filterText) {
-    filterText = filterText.toLowerCase();
-    List<Recipe> filteredRecipes = [];
+    List<Recipe> filteredRecipes = recipes.where((recipe) {
+      final titleMatches =
+          recipe.title.toLowerCase().contains(filterText.toLowerCase());
 
-    for (int i = 0; i < recipes.length; i++) {
-      if (recipes[i].title.contains(filterText)) {
-        filteredRecipes.add(recipes[i]);
-      }
-      // Go through all ingredients and make them lowercase
-      else {
-        for (int y = 0; y < recipes[i].ingredients.length; y++) {
-          recipes[i].ingredients[y].toLowerCase() == filterText.toLowerCase();
-        }
-      }
-    }
+      final ingredientMatches = recipe.ingredients.any((ingredient) =>
+          ingredient.toLowerCase().contains(filterText.toLowerCase()));
+
+      return titleMatches || ingredientMatches;
+    }).toList();
+
     return filteredRecipes;
+  }
+
+  List<Recipe> filterRecipesByKeto(bool isKeto) {
+    List<Recipe> ketoRecipes =
+        recipes.where((recipe) => recipe.isKeto == isKeto).toList();
+
+    return ketoRecipes;
   }
 
   @override
@@ -76,7 +78,6 @@ class _MyHomePageState extends State<MyHomePage> {
                 setState(() {
                   filterText = value;
                   filterRecipes(filterText);
-                  print(filterText);
                 });
               },
               decoration: const InputDecoration(
@@ -87,10 +88,12 @@ class _MyHomePageState extends State<MyHomePage> {
           const SizedBox(width: 10),
           Text('Keto'),
           Switch(
-            value: filterKeto,
-            onChanged: (value) {
+            value: isKeto,
+            onChanged: (bool value) {
               setState(() {
-                filterKeto = value;
+                isKeto = value;
+                recipes = filterRecipesByKeto(isKeto);
+                // Apply filtering and update the recipes list
               });
             },
           ),
@@ -105,6 +108,11 @@ class _MyHomePageState extends State<MyHomePage> {
         builder: ((context, snapshot) {
           if (snapshot.hasData) {
             recipes = snapshot.data!;
+
+            if (isKeto == true) {
+              recipes = filterRecipesByKeto(isKeto);
+            }
+
             if (filterText != '') {
               recipes = filterRecipes(filterText);
             }
@@ -142,8 +150,9 @@ class _MyHomePageState extends State<MyHomePage> {
     );
   }
 
+/*
   List<Recipe> getFilteredRecipes(List<Recipe> recipes) {
-    if (filterText.isEmpty && !filterKeto) {
+    if (filterText.isEmpty && !isKeto) {
       return recipes; // Return all recipes when no filter is applied
     }
 
@@ -153,10 +162,11 @@ class _MyHomePageState extends State<MyHomePage> {
       final ingredientsMatch = filterText.isEmpty ||
           recipe.ingredients.any((ingredient) =>
               ingredient.toLowerCase().contains(filterText.toLowerCase()));
-      final ketoMatch = !filterKeto || recipe.isKeto;
+      final ketoMatch = !isKeto || recipe.isKeto;
       return titleMatch || ingredientsMatch && ketoMatch;
     }).toList();
   }
+  */
 }
 
 class RecipeListItem extends StatefulWidget {
