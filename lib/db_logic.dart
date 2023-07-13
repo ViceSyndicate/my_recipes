@@ -8,38 +8,29 @@ import 'dart:io';
 import 'package:my_recipes/model_recipe.dart';
 import 'package:path_provider/path_provider.dart';
 import 'dart:async';
-
+import 'package:localstorage/localstorage.dart';
+// https://pub.dev/packages/localstorage/example
 Future<List<Recipe>> getRecipes() async {
-  final appDocDir = await getApplicationDocumentsDirectory();
-  final filePath = '${appDocDir.path}/recipes.json';
-
-  final file = File(filePath);
-  final fileExists = await file.exists();
-  if (!fileExists) {
-    await file.create();
-  }
-
-  // get recipes
-  final contents = await file.readAsString();
-  List<dynamic> recipesJson = contents.isNotEmpty ? jsonDecode(contents) : [];
-
+  //final appDocDir = await getApplicationDocumentsDirectory();
+  //final filePath = '${appDocDir.path}/recipes.json';
+  
+  final storage = LocalStorage('recipe_data.json');
+  
+  print("Printing storage");
+  print(storage);
   List<Recipe> recipes = [];
-  for (var recipeJson in recipesJson) {
-    recipes.add(Recipe.fromJson(recipeJson));
-  }
 
   return recipes;
 }
 
-// Future<void> saveRecipe(Recipe recipe) async {
 Future<void> saveRecipe(Recipe recipe) async {
+  final storage = LocalStorage('recipe_data.json');
+  List<Recipe> recipes = [];
+  recipes.add(recipe)
+  /*
   List<Recipe> recipes = await getRecipes();
   recipes.add(recipe);
-  /*
-  for (int i = 0; i < recipes.length; i++) {
-    print(recipes[i].id.toString());
-  }
-  */
+
   String jsonString = jsonEncode(recipes);
 
   final appDocDir = await getApplicationDocumentsDirectory();
@@ -47,6 +38,7 @@ Future<void> saveRecipe(Recipe recipe) async {
 
   final file = await File(filePath);
   await file.writeAsString(jsonString);
+  */
 }
 
 Future<void> saveRecipes(List<Recipe> recipes) async {

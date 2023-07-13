@@ -40,6 +40,7 @@ class _MyHomePageState extends State<MyHomePage> {
   bool isKeto = false;
   void updateRecipes() {
     setState(() {});
+    getRecipes();
   }
 
   // Note to self: Study this code.

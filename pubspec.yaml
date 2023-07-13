@@ -17,6 +17,7 @@ dependencies:
   provider: ^6.0.0
   uuid: ^3.0.7
   path_provider: ^2.0.15
+  localstorage: ^4.0.0+1
 
 dev_dependencies:
   flutter_test:
