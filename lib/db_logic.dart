@@ -26,7 +26,7 @@ Future<List<Recipe>> getRecipes() async {
 Future<void> saveRecipe(Recipe recipe) async {
   final storage = LocalStorage('recipe_data.json');
   List<Recipe> recipes = [];
-  recipes.add(recipe)
+  recipes.add(recipe);
   /*
   List<Recipe> recipes = await getRecipes();
   recipes.add(recipe);
