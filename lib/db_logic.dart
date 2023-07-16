@@ -10,23 +10,36 @@ import 'package:path_provider/path_provider.dart';
 import 'dart:async';
 import 'package:localstorage/localstorage.dart';
 // https://pub.dev/packages/localstorage/example
+
+
 Future<List<Recipe>> getRecipes() async {
-  //final appDocDir = await getApplicationDocumentsDirectory();
-  //final filePath = '${appDocDir.path}/recipes.json';
-  
   final storage = LocalStorage('recipe_data.json');
   
-  print("Printing storage");
-  print(storage);
   List<Recipe> recipes = [];
-
+  String? recipeJson = storage.getItem('recipes');
+  if (recipeJson != null) {
+  List<dynamic> decodedRecipes = jsonDecode(recipeJson);
+  for (var recipe in decodedRecipes) {
+    recipes.add(Recipe.fromJson(recipe));
+  }
   return recipes;
+  } else {
+    return recipes;
+  }
+
+  // Try Catch Null Check?
+
+  
 }
 
 Future<void> saveRecipe(Recipe recipe) async {
   final storage = LocalStorage('recipe_data.json');
   List<Recipe> recipes = [];
   recipes.add(recipe);
+
+  storage.setItem('recipes', jsonEncode(recipes));
+
+
   /*
   List<Recipe> recipes = await getRecipes();
   recipes.add(recipe);
