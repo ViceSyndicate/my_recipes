@@ -39,6 +39,7 @@ class _MyHomePageState extends State<MyHomePage> {
   String filterText = '';
   bool isKeto = false;
   void updateRecipes() {
+    getStorage();
     setState(() {});
     getRecipes();
   }

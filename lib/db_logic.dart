@@ -11,25 +11,28 @@ import 'dart:async';
 import 'package:localstorage/localstorage.dart';
 // https://pub.dev/packages/localstorage/example
 
+LocalStorage storage = getStorage();
+
+LocalStorage getStorage() {
+  final storage = LocalStorage('recipe_data.json');
+  storage.ready;
+  return storage;
+}
 
 Future<List<Recipe>> getRecipes() async {
-  final storage = LocalStorage('recipe_data.json');
-  
   List<Recipe> recipes = [];
   String? recipeJson = storage.getItem('recipes');
   if (recipeJson != null) {
-  List<dynamic> decodedRecipes = jsonDecode(recipeJson);
-  for (var recipe in decodedRecipes) {
-    recipes.add(Recipe.fromJson(recipe));
-  }
-  return recipes;
+    List<dynamic> decodedRecipes = jsonDecode(recipeJson);
+    for (var recipe in decodedRecipes) {
+      recipes.add(Recipe.fromJson(recipe));
+    }
+    return recipes;
   } else {
     return recipes;
   }
 
   // Try Catch Null Check?
-
-  
 }
 
 Future<void> saveRecipe(Recipe recipe) async {
@@ -38,7 +41,6 @@ Future<void> saveRecipe(Recipe recipe) async {
   recipes.add(recipe);
 
   storage.setItem('recipes', jsonEncode(recipes));
-
 
   /*
   List<Recipe> recipes = await getRecipes();
