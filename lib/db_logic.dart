@@ -31,71 +31,21 @@ Future<List<Recipe>> getRecipes() async {
   } else {
     return recipes;
   }
-
-  // Try Catch Null Check?
 }
 
 Future<void> saveRecipe(Recipe recipe) async {
-  final storage = LocalStorage('recipe_data.json');
-  List<Recipe> recipes = [];
-  recipes.add(recipe);
-
-  storage.setItem('recipes', jsonEncode(recipes));
-
-  /*
-  List<Recipe> recipes = await getRecipes();
-  recipes.add(recipe);
-
-  String jsonString = jsonEncode(recipes);
-
-  final appDocDir = await getApplicationDocumentsDirectory();
-  final filePath = '${appDocDir.path}/recipes.json';
-
-  final file = await File(filePath);
-  await file.writeAsString(jsonString);
-  */
-}
-
-Future<void> saveRecipes(List<Recipe> recipes) async {
-  String jsonString = jsonEncode(recipes);
-
-  final appDocDir = await getApplicationDocumentsDirectory();
-  final filePath = '${appDocDir.path}/recipes.json';
-
-  final file = await File(filePath);
-  await file.writeAsString(jsonString);
+  try {
+    List<Recipe> recipes = await getRecipes();
+    recipes.add(recipe);
+    storage.setItem('recipes', jsonEncode(recipes));
+  } catch(e) {
+    print('Error: $e');
+  }  
 }
 
 Future<void> deleteRecipe(Recipe recipe) async {
   List<Recipe> recipes = await getRecipes();
   print('Id to remove: ' + recipe.id.toString());
   recipes.removeWhere((r) => r.id == recipe.id);
-
-  final appDocDir = await getApplicationDocumentsDirectory();
-  final filePath = '${appDocDir.path}/recipes.json';
-  final file = File(filePath);
-
-  await file.writeAsString(jsonEncode(recipes));
+  storage.setItem('recipes', jsonEncode(recipes));
 }
-
-// Could write a function that simply saves a list of recipes.
-// I think that'd be less code.
-
-/*
-//Future<String> get _localPath async {
-  //final directory = await getApplicationDocumentsDirectory();
-
-  //return directory.path;
-//}
-
-final file = File('/path/to/shared/folder/recipes.json');
-final recipes = json.decode(await file.readAsString()) as List<dynamic>;
-final recipeObjects = recipes.map((recipeJson) => Recipe.fromJson(recipeJson)).toList();
-
-
-
-final file = File('/path/to/shared/folder/recipes.json');
-final recipes = json.decode(await file.readAsString()) as List<dynamic>;
-recipes.add(recipe.toJson());
-await file.writeAsString(json.encode(recipes));
-*/
