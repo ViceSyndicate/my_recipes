@@ -100,9 +100,17 @@ class _MyHomePageState extends State<MyHomePage> {
             },
           ),
           IconButton(
-            icon: const Icon(Icons.refresh),
-            onPressed: updateRecipes,
-          ),
+              icon: const Icon(Icons.download),
+              onPressed: () {},
+              tooltip: 'Export Recipes'),
+          IconButton(
+              icon: const Icon(Icons.upload),
+              onPressed: () {},
+              tooltip: 'Import Recipes'),
+          IconButton(
+              icon: const Icon(Icons.refresh),
+              onPressed: updateRecipes,
+              tooltip: 'Refresh Recipes'),
         ],
       )),
       body: FutureBuilder<List<Recipe>>(
@@ -196,6 +204,7 @@ class _RecipeListItemState extends State<RecipeListItem> {
                 builder: (context) => DisplayRecipePage(widget.recipe)))
       },
       trailing: IconButton(
+        tooltip: 'Delete Recipe',
         icon: const Icon(Icons.delete),
         onPressed: () {
           /* I think I need to remake the delete button to be a future because 
