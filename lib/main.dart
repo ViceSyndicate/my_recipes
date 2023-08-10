@@ -4,7 +4,13 @@ import 'package:my_recipes/model_recipe.dart';
 import 'package:my_recipes/vm_display_recipe.dart';
 import 'db_logic.dart';
 
-void main() {
+Future<void> initializeApp() async {
+  db_logic db = db_logic();
+}
+
+void main() async {
+  WidgetsFlutterBinding.ensureInitialized();
+  await initializeApp();
   runApp(const MyApp());
 }
 
@@ -14,36 +20,43 @@ class MyApp extends StatelessWidget {
   // This widget is the root of your application.
   @override
   Widget build(BuildContext context) {
+    db_logic db = db_logic();
     return MaterialApp(
       title: 'My Recipes Demo',
       theme: ThemeData(
         brightness: Brightness.dark,
       ),
-      home: const MyHomePage(title: 'My Recipes Home Page'),
+      home: MyHomePage(title: 'My Recipes Home Page', db),
     );
   }
 }
 
 class MyHomePage extends StatefulWidget {
-  const MyHomePage({super.key, required this.title});
-
+  const MyHomePage(this.db, {super.key, required this.title});
   final String title;
+  final db_logic db;
 
   @override
   State<MyHomePage> createState() => _MyHomePageState();
 }
 
 class _MyHomePageState extends State<MyHomePage> {
-  List<Recipe> recipes = [];
+  late db_logic db;
+
+  @override
+  void initState() {
+    super.initState();
+    db = db_logic();
+  }
 
   String filterText = '';
   bool isKeto = false;
   void updateRecipes() {
-    getStorage();
     setState(() {});
-    getRecipes();
+    db.getRecipes();
   }
 
+  List<Recipe> recipes = widget.db.recipes;
   // Note to self: Study this code.
   List<Recipe> filterRecipes(filterText) {
     List<Recipe> filteredRecipes = recipes.where((recipe) {
@@ -114,7 +127,7 @@ class _MyHomePageState extends State<MyHomePage> {
         ],
       )),
       body: FutureBuilder<List<Recipe>>(
-        future: getRecipes(),
+        future: db.getRecipes(),
         builder: ((context, snapshot) {
           if (snapshot.hasData) {
             recipes = snapshot.data!;
@@ -129,10 +142,7 @@ class _MyHomePageState extends State<MyHomePage> {
             return ListView.builder(
               itemCount: recipes.length,
               itemBuilder: (context, index) {
-                return RecipeListItem(
-                  recipes[index],
-                  updateRecipes,
-                );
+                return RecipeListItem(recipes[index], updateRecipes, db);
               },
             );
           } else if (snapshot.hasError) {
@@ -146,10 +156,8 @@ class _MyHomePageState extends State<MyHomePage> {
       floatingActionButton: FloatingActionButton(
           onPressed: () async {
             // Navigate to RecipeFormPage and wait for result
-            await Navigator.push(
-                context,
-                MaterialPageRoute(
-                    builder: (context) => const RecipeFormPage()));
+            await Navigator.push(context,
+                MaterialPageRoute(builder: (context) => RecipeFormPage(db)));
 
             // If a new recipe was added, update the list of recipes
 
@@ -180,8 +188,9 @@ class _MyHomePageState extends State<MyHomePage> {
 }
 
 class RecipeListItem extends StatefulWidget {
-  const RecipeListItem(this.recipe, this.onUpdate, {super.key});
+  const RecipeListItem(this.recipe, this.onUpdate, this.db, {super.key});
   final Recipe recipe;
+  final db_logic db;
   // onUpdate calls updateRecipes which calls setState()
   // in our main Widget to update our list of recipes
   final Function() onUpdate;
@@ -209,7 +218,7 @@ class _RecipeListItemState extends State<RecipeListItem> {
         onPressed: () {
           /* I think I need to remake the delete button to be a future because 
           somtimes it deletes a recipe but  */
-          deleteRecipe(widget.recipe);
+          widget.db.deleteRecipe(widget.recipe);
           // Dirty fix to remove the need to use refresh button
           // When the UI doesn't update properly.
           Future.delayed(const Duration(milliseconds: 10))

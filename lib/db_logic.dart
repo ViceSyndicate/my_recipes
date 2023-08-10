@@ -11,41 +11,52 @@ import 'dart:async';
 import 'package:localstorage/localstorage.dart';
 // https://pub.dev/packages/localstorage/example
 
-LocalStorage storage = getStorage();
+class db_logic {
+  final LocalStorage storage = LocalStorage('recipe_data.json');
+  static final db_logic _instance = db_logic._internal();
 
-LocalStorage getStorage() {
-  final storage = LocalStorage('recipe_data.json');
-  storage.ready;
-  return storage;
-}
+  // ignore: prefer_final_fields
+  List<Recipe> _recipes = [];
 
-Future<List<Recipe>> getRecipes() async {
-  List<Recipe> recipes = [];
-  String? recipeJson = storage.getItem('recipes');
-  if (recipeJson != null) {
-    List<dynamic> decodedRecipes = jsonDecode(recipeJson);
-    for (var recipe in decodedRecipes) {
-      recipes.add(Recipe.fromJson(recipe));
+  factory db_logic() {
+    return _instance;
+  }
+
+  db_logic._internal() {
+    storage.ready;
+    _recipes = getRecipes() as List<Recipe>;
+  }
+
+  List<Recipe> get recipes => _recipes; // Method to access the recipes
+  List<Recipe> set recipes => _recipes;
+
+  Future<List<Recipe>> getRecipes() async {
+    List<Recipe> recipes = [];
+    String? recipeJson = await storage.getItem('recipes');
+    if (recipeJson != null) {
+      List<dynamic> decodedRecipes = jsonDecode(recipeJson);
+      for (var recipe in decodedRecipes) {
+        recipes.add(Recipe.fromJson(recipe));
+      }
     }
-    return recipes;
-  } else {
+    //_recipes = recipes;
     return recipes;
   }
-}
 
-Future<void> saveRecipe(Recipe recipe) async {
-  try {
+  Future<void> saveRecipe(Recipe recipe) async {
+    try {
+      List<Recipe> recipes = await getRecipes();
+      recipes.add(recipe);
+      storage.setItem('recipes', jsonEncode(recipes));
+    } catch (e) {
+      print('Error: $e');
+    }
+  }
+
+  Future<void> deleteRecipe(Recipe recipe) async {
     List<Recipe> recipes = await getRecipes();
-    recipes.add(recipe);
+    print('Id to remove: ' + recipe.id.toString());
+    recipes.removeWhere((r) => r.id == recipe.id);
     storage.setItem('recipes', jsonEncode(recipes));
-  } catch(e) {
-    print('Error: $e');
-  }  
-}
-
-Future<void> deleteRecipe(Recipe recipe) async {
-  List<Recipe> recipes = await getRecipes();
-  print('Id to remove: ' + recipe.id.toString());
-  recipes.removeWhere((r) => r.id == recipe.id);
-  storage.setItem('recipes', jsonEncode(recipes));
+  }
 }
