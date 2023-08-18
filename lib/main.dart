@@ -156,6 +156,13 @@ class _MyHomePageState extends State<MyHomePage> {
             if (filterText != '') {
               //widget.db.recipes = filterRecipes(filterText);
             }
+            return ListView.builder(
+              itemCount: widget.db.recipes.length,
+              itemBuilder: (context, index) {
+                return RecipeListItem(
+                    widget.db.recipes[index], updateRecipes, widget.db);
+              },
+            );
           } else if (snapshot.hasError) {
             return Center(
                 child: Text("Error fetching recipes: ${snapshot.error}"));
