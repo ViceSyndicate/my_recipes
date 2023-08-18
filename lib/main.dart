@@ -41,7 +41,7 @@ class MyHomePage extends StatefulWidget {
 }
 
 class _MyHomePageState extends State<MyHomePage> {
-  late Future<List<Recipe>> recipes;
+  Future<Iterable<Recipe>>? recipes;
 
   @override
   void initState() {
@@ -49,15 +49,6 @@ class _MyHomePageState extends State<MyHomePage> {
     super.initState();
     //print(recipes);
     //_initializeRecipes(); // Call an async function to initialize recipes
-  }
-
-  Future<void> _initializeRecipes() async {
-    List<Recipe> fetchedRecipes = await widget.db.getRecipes();
-    setState(() {
-      recipes = Future.value(fetchedRecipes);
-      print("The recipes:");
-      print(recipes);
-    });
   }
 
   String filterText = '';
@@ -102,7 +93,7 @@ class _MyHomePageState extends State<MyHomePage> {
               onChanged: (value) {
                 setState(() {
                   filterText = value;
-                  filterRecipes(filterText);
+                  //filterRecipes(filterText);
                 });
               },
               decoration: const InputDecoration(
@@ -117,7 +108,7 @@ class _MyHomePageState extends State<MyHomePage> {
             onChanged: (bool value) {
               setState(() {
                 isKeto = value;
-                widget.db.recipes = filterRecipesByKeto(isKeto);
+                //widget.db.recipes = filterRecipesByKeto(isKeto);
                 // Apply filtering and update the recipes list
               });
             },
@@ -136,11 +127,12 @@ class _MyHomePageState extends State<MyHomePage> {
               tooltip: 'Refresh Recipes'),
         ],
       )),
-      body: FutureBuilder<List<Recipe>>(
+      body: FutureBuilder<Iterable<Recipe>>(
         future: recipes,
         builder: ((context, snapshot) {
           var data = snapshot.data;
           print("Snapshot data: ${snapshot.data}");
+          print("recipes: ${recipes}");
           //print(snapshot.connectionState);
           if (data == null) {
             return const Text("Loading...");
@@ -148,14 +140,7 @@ class _MyHomePageState extends State<MyHomePage> {
           if (snapshot.hasData) {
             print(snapshot.data);
             //widget.db.recipes = snapshot.data!;
-
-            if (isKeto == true) {
-              //widget.db.recipes = filterRecipesByKeto(isKeto);
-            }
-
-            if (filterText != '') {
-              //widget.db.recipes = filterRecipes(filterText);
-            }
+            /*
             return ListView.builder(
               itemCount: widget.db.recipes.length,
               itemBuilder: (context, index) {
@@ -163,12 +148,12 @@ class _MyHomePageState extends State<MyHomePage> {
                     widget.db.recipes[index], updateRecipes, widget.db);
               },
             );
+            */
           } else if (snapshot.hasError) {
             return Center(
                 child: Text("Error fetching recipes: ${snapshot.error}"));
-          } else {
-            return const Center(child: CircularProgressIndicator());
           }
+          return const Center(child: CircularProgressIndicator());
         }),
       ),
       floatingActionButton: FloatingActionButton(

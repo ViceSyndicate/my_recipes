@@ -16,7 +16,8 @@ class db_logic {
   late List<Recipe> recipes;
   db_logic() {
     this.storage = getStorage();
-    Future<List<Recipe>> recipes = getRecipes();
+    Future<Iterable<Recipe>> recipeList = getRecipes();
+    recipes = recipes.toList(growable: true);
   }
 
   LocalStorage getStorage() {
@@ -25,7 +26,7 @@ class db_logic {
     return storage;
   }
 
-  Future<List<Recipe>> getRecipes() async {
+  Future<Iterable<Recipe>> getRecipes() async {
     List<Recipe> recipes = [];
     String? recipeJson = storage.getItem('recipes');
     if (recipeJson != null) {
@@ -42,18 +43,24 @@ class db_logic {
 
   Future<void> saveRecipe(Recipe recipe) async {
     try {
-      List<Recipe> recipes = await getRecipes();
-      recipes.add(recipe);
-      storage.setItem('recipes', jsonEncode(recipes));
+      Iterable<Recipe> recipes = await getRecipes();
+
+      List<Recipe> recipesList = recipes.toList(growable: true);
+
+      recipesList.add(recipe);
+      storage.setItem('recipes', jsonEncode(recipesList));
     } catch (e) {
       print('Error: $e');
     }
   }
 
   Future<void> deleteRecipe(Recipe recipe) async {
-    List<Recipe> recipes = await getRecipes();
+    Iterable<Recipe> recipes = await getRecipes();
+
+    List<Recipe> recipesList = recipes.toList(growable: true);
+
     print('Id to remove: ' + recipe.id.toString());
-    recipes.removeWhere((r) => r.id == recipe.id);
-    storage.setItem('recipes', jsonEncode(recipes));
+    recipesList.removeWhere((r) => r.id == recipe.id);
+    storage.setItem('recipes', jsonEncode(recipesList));
   }
 }
