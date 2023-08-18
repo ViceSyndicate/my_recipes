@@ -4,7 +4,13 @@ import 'package:my_recipes/model_recipe.dart';
 import 'package:my_recipes/vm_display_recipe.dart';
 import 'db_logic.dart';
 
-void main() {
+Future<void> initializeApp() async {
+  db_logic db = db_logic();
+}
+
+void main() async {
+  WidgetsFlutterBinding.ensureInitialized();
+  await initializeApp();
   runApp(const MyApp());
 }
 
@@ -14,39 +20,46 @@ class MyApp extends StatelessWidget {
   // This widget is the root of your application.
   @override
   Widget build(BuildContext context) {
+    db_logic db = db_logic();
     return MaterialApp(
       title: 'My Recipes Demo',
       theme: ThemeData(
         brightness: Brightness.dark,
       ),
-      home: const MyHomePage(title: 'My Recipes Home Page'),
+      home: MyHomePage(title: 'My Recipes Home Page', db),
     );
   }
 }
 
 class MyHomePage extends StatefulWidget {
-  const MyHomePage({super.key, required this.title});
-
+  const MyHomePage(this.db, {super.key, required this.title});
   final String title;
+  final db_logic db;
 
   @override
   State<MyHomePage> createState() => _MyHomePageState();
 }
 
 class _MyHomePageState extends State<MyHomePage> {
-  List<Recipe> recipes = [];
+  Future<List<Recipe>>? recipes;
+
+  @override
+  void initState() {
+    super.initState();
+    recipes = widget.db.getRecipes();
+    print(recipes);
+  }
 
   String filterText = '';
   bool isKeto = false;
   void updateRecipes() {
-    getStorage();
     setState(() {});
-    getRecipes();
+    //widget.db.getRecipes();
   }
 
   // Note to self: Study this code.
   List<Recipe> filterRecipes(filterText) {
-    List<Recipe> filteredRecipes = recipes.where((recipe) {
+    List<Recipe> filteredRecipes = widget.db.recipes.where((recipe) {
       final titleMatches =
           recipe.title.toLowerCase().contains(filterText.toLowerCase());
 
@@ -61,10 +74,31 @@ class _MyHomePageState extends State<MyHomePage> {
 
   List<Recipe> filterRecipesByKeto(bool isKeto) {
     List<Recipe> ketoRecipes =
-        recipes.where((recipe) => recipe.isKeto == isKeto).toList();
+        widget.db.recipes.where((recipe) => recipe.isKeto == isKeto).toList();
 
     return ketoRecipes;
   }
+
+  /*
+  // Example on how TempiroAdminTool does it
+
+   bool _matchesFilter(Panel panel, String text) {
+    return panel.Mac.toLowerCase().contains(text) ||
+        (panel.Email?.contains(text) ?? false);
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return FutureBuilder(
+      future: panels,
+      builder: (context, snapshot) {
+        var data = snapshot.data
+            ?.where((element) =>
+                _matchesFilter(element, filterController.text.toLowerCase()))
+            .toList();
+        if (data == null) {
+          re
+  */
 
   @override
   Widget build(BuildContext context) {
@@ -94,7 +128,7 @@ class _MyHomePageState extends State<MyHomePage> {
             onChanged: (bool value) {
               setState(() {
                 isKeto = value;
-                recipes = filterRecipesByKeto(isKeto);
+                widget.db.recipes = filterRecipesByKeto(isKeto);
                 // Apply filtering and update the recipes list
               });
             },
@@ -114,25 +148,23 @@ class _MyHomePageState extends State<MyHomePage> {
         ],
       )),
       body: FutureBuilder<List<Recipe>>(
-        future: getRecipes(),
+        future: recipes,
         builder: ((context, snapshot) {
           if (snapshot.hasData) {
-            recipes = snapshot.data!;
+            widget.db.recipes = snapshot.data!;
 
             if (isKeto == true) {
-              recipes = filterRecipesByKeto(isKeto);
+              widget.db.recipes = filterRecipesByKeto(isKeto);
             }
 
             if (filterText != '') {
-              recipes = filterRecipes(filterText);
+              widget.db.recipes = filterRecipes(filterText);
             }
             return ListView.builder(
-              itemCount: recipes.length,
+              itemCount: widget.db.recipes.length,
               itemBuilder: (context, index) {
                 return RecipeListItem(
-                  recipes[index],
-                  updateRecipes,
-                );
+                    widget.db.recipes[index], updateRecipes, widget.db);
               },
             );
           } else if (snapshot.hasError) {
@@ -149,7 +181,7 @@ class _MyHomePageState extends State<MyHomePage> {
             await Navigator.push(
                 context,
                 MaterialPageRoute(
-                    builder: (context) => const RecipeFormPage()));
+                    builder: (context) => RecipeFormPage(widget.db)));
 
             // If a new recipe was added, update the list of recipes
 
@@ -180,8 +212,9 @@ class _MyHomePageState extends State<MyHomePage> {
 }
 
 class RecipeListItem extends StatefulWidget {
-  const RecipeListItem(this.recipe, this.onUpdate, {super.key});
+  const RecipeListItem(this.recipe, this.onUpdate, this.db, {super.key});
   final Recipe recipe;
+  final db_logic db;
   // onUpdate calls updateRecipes which calls setState()
   // in our main Widget to update our list of recipes
   final Function() onUpdate;
@@ -209,7 +242,7 @@ class _RecipeListItemState extends State<RecipeListItem> {
         onPressed: () {
           /* I think I need to remake the delete button to be a future because 
           somtimes it deletes a recipe but  */
-          deleteRecipe(widget.recipe);
+          widget.db.deleteRecipe(widget.recipe);
           // Dirty fix to remove the need to use refresh button
           // When the UI doesn't update properly.
           Future.delayed(const Duration(milliseconds: 10))
