@@ -41,13 +41,23 @@ class MyHomePage extends StatefulWidget {
 }
 
 class _MyHomePageState extends State<MyHomePage> {
-  Future<List<Recipe>>? recipes;
+  late Future<List<Recipe>> recipes;
 
   @override
   void initState() {
-    super.initState();
     recipes = widget.db.getRecipes();
-    print(recipes);
+    super.initState();
+    //print(recipes);
+    //_initializeRecipes(); // Call an async function to initialize recipes
+  }
+
+  Future<void> _initializeRecipes() async {
+    List<Recipe> fetchedRecipes = await widget.db.getRecipes();
+    setState(() {
+      recipes = Future.value(fetchedRecipes);
+      print("The recipes:");
+      print(recipes);
+    });
   }
 
   String filterText = '';
@@ -78,27 +88,6 @@ class _MyHomePageState extends State<MyHomePage> {
 
     return ketoRecipes;
   }
-
-  /*
-  // Example on how TempiroAdminTool does it
-
-   bool _matchesFilter(Panel panel, String text) {
-    return panel.Mac.toLowerCase().contains(text) ||
-        (panel.Email?.contains(text) ?? false);
-  }
-
-  @override
-  Widget build(BuildContext context) {
-    return FutureBuilder(
-      future: panels,
-      builder: (context, snapshot) {
-        var data = snapshot.data
-            ?.where((element) =>
-                _matchesFilter(element, filterController.text.toLowerCase()))
-            .toList();
-        if (data == null) {
-          re
-  */
 
   @override
   Widget build(BuildContext context) {
@@ -150,23 +139,23 @@ class _MyHomePageState extends State<MyHomePage> {
       body: FutureBuilder<List<Recipe>>(
         future: recipes,
         builder: ((context, snapshot) {
+          var data = snapshot.data;
+          print("Snapshot data: ${snapshot.data}");
+          //print(snapshot.connectionState);
+          if (data == null) {
+            return const Text("Loading...");
+          }
           if (snapshot.hasData) {
-            widget.db.recipes = snapshot.data!;
+            print(snapshot.data);
+            //widget.db.recipes = snapshot.data!;
 
             if (isKeto == true) {
-              widget.db.recipes = filterRecipesByKeto(isKeto);
+              //widget.db.recipes = filterRecipesByKeto(isKeto);
             }
 
             if (filterText != '') {
-              widget.db.recipes = filterRecipes(filterText);
+              //widget.db.recipes = filterRecipes(filterText);
             }
-            return ListView.builder(
-              itemCount: widget.db.recipes.length,
-              itemBuilder: (context, index) {
-                return RecipeListItem(
-                    widget.db.recipes[index], updateRecipes, widget.db);
-              },
-            );
           } else if (snapshot.hasError) {
             return Center(
                 child: Text("Error fetching recipes: ${snapshot.error}"));
@@ -239,10 +228,11 @@ class _RecipeListItemState extends State<RecipeListItem> {
       trailing: IconButton(
         tooltip: 'Delete Recipe',
         icon: const Icon(Icons.delete),
-        onPressed: () {
+        onPressed: () async {
           /* I think I need to remake the delete button to be a future because 
           somtimes it deletes a recipe but  */
-          widget.db.deleteRecipe(widget.recipe);
+          await widget.db.deleteRecipe(widget.recipe);
+          widget.onUpdate();
           // Dirty fix to remove the need to use refresh button
           // When the UI doesn't update properly.
           Future.delayed(const Duration(milliseconds: 10))
