@@ -5,7 +5,7 @@ import 'package:my_recipes/vm_display_recipe.dart';
 import 'db_logic.dart';
 
 Future<void> initializeApp() async {
-  db_logic db = db_logic();
+  //db_logic db = db_logic();
 }
 
 void main() async {
@@ -20,32 +20,31 @@ class MyApp extends StatelessWidget {
   // This widget is the root of your application.
   @override
   Widget build(BuildContext context) {
-    db_logic db = db_logic();
+    //db_logic db = db_logic();
     return MaterialApp(
       title: 'My Recipes Demo',
       theme: ThemeData(
         brightness: Brightness.dark,
       ),
-      home: MyHomePage(title: 'My Recipes Home Page', db),
+      home: MyHomePage(title: 'My Recipes Home Page'),
     );
   }
 }
 
 class MyHomePage extends StatefulWidget {
-  const MyHomePage(this.db, {super.key, required this.title});
+  const MyHomePage({super.key, required this.title});
   final String title;
-  final db_logic db;
+  //final db_logic db;
 
   @override
   State<MyHomePage> createState() => _MyHomePageState();
 }
 
 class _MyHomePageState extends State<MyHomePage> {
-  Future<Iterable<Recipe>>? recipes;
+  List<Recipe> recipes = [];
 
   @override
   void initState() {
-    recipes = widget.db.getRecipes();
     super.initState();
     //print(recipes);
     //_initializeRecipes(); // Call an async function to initialize recipes
@@ -60,7 +59,7 @@ class _MyHomePageState extends State<MyHomePage> {
 
   // Note to self: Study this code.
   List<Recipe> filterRecipes(filterText) {
-    List<Recipe> filteredRecipes = widget.db.recipes.where((recipe) {
+    List<Recipe> filteredRecipes = recipes.where((recipe) {
       final titleMatches =
           recipe.title.toLowerCase().contains(filterText.toLowerCase());
 
@@ -75,7 +74,7 @@ class _MyHomePageState extends State<MyHomePage> {
 
   List<Recipe> filterRecipesByKeto(bool isKeto) {
     List<Recipe> ketoRecipes =
-        widget.db.recipes.where((recipe) => recipe.isKeto == isKeto).toList();
+        recipes.where((recipe) => recipe.isKeto == isKeto).toList();
 
     return ketoRecipes;
   }
@@ -108,7 +107,7 @@ class _MyHomePageState extends State<MyHomePage> {
             onChanged: (bool value) {
               setState(() {
                 isKeto = value;
-                //widget.db.recipes = filterRecipesByKeto(isKeto);
+                recipes = filterRecipesByKeto(isKeto);
                 // Apply filtering and update the recipes list
               });
             },
@@ -128,27 +127,22 @@ class _MyHomePageState extends State<MyHomePage> {
         ],
       )),
       body: FutureBuilder<Iterable<Recipe>>(
-        future: recipes,
+        future: getRecipes(),
         builder: ((context, snapshot) {
           var data = snapshot.data;
-          print("Snapshot data: ${snapshot.data}");
-          print("recipes: ${recipes}");
-          //print(snapshot.connectionState);
           if (data == null) {
-            return const Text("Loading...");
+            return const Text("Null Data!");
           }
           if (snapshot.hasData) {
-            print(snapshot.data);
+            //print(snapshot.data);
             //widget.db.recipes = snapshot.data!;
-            /*
+            recipes = snapshot.data as List<Recipe>;
             return ListView.builder(
-              itemCount: widget.db.recipes.length,
+              itemCount: recipes.length,
               itemBuilder: (context, index) {
-                return RecipeListItem(
-                    widget.db.recipes[index], updateRecipes, widget.db);
+                return RecipeListItem(recipes[index], updateRecipes);
               },
             );
-            */
           } else if (snapshot.hasError) {
             return Center(
                 child: Text("Error fetching recipes: ${snapshot.error}"));
@@ -159,10 +153,8 @@ class _MyHomePageState extends State<MyHomePage> {
       floatingActionButton: FloatingActionButton(
           onPressed: () async {
             // Navigate to RecipeFormPage and wait for result
-            await Navigator.push(
-                context,
-                MaterialPageRoute(
-                    builder: (context) => RecipeFormPage(widget.db)));
+            await Navigator.push(context,
+                MaterialPageRoute(builder: (context) => RecipeFormPage()));
 
             // If a new recipe was added, update the list of recipes
 
@@ -193,9 +185,9 @@ class _MyHomePageState extends State<MyHomePage> {
 }
 
 class RecipeListItem extends StatefulWidget {
-  const RecipeListItem(this.recipe, this.onUpdate, this.db, {super.key});
+  const RecipeListItem(this.recipe, this.onUpdate, {super.key});
   final Recipe recipe;
-  final db_logic db;
+  //final db_logic db;
   // onUpdate calls updateRecipes which calls setState()
   // in our main Widget to update our list of recipes
   final Function() onUpdate;
@@ -223,7 +215,7 @@ class _RecipeListItemState extends State<RecipeListItem> {
         onPressed: () async {
           /* I think I need to remake the delete button to be a future because 
           somtimes it deletes a recipe but  */
-          await widget.db.deleteRecipe(widget.recipe);
+          await deleteRecipe(widget.recipe);
           widget.onUpdate();
           // Dirty fix to remove the need to use refresh button
           // When the UI doesn't update properly.
