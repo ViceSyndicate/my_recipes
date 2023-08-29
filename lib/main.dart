@@ -46,15 +46,12 @@ class _MyHomePageState extends State<MyHomePage> {
   @override
   void initState() {
     super.initState();
-    //print(recipes);
-    //_initializeRecipes(); // Call an async function to initialize recipes
   }
 
   String filterText = '';
   bool isKeto = false;
   void updateRecipes() {
     setState(() {});
-    //widget.db.getRecipes();
   }
 
   // Note to self: Study this code.
@@ -92,7 +89,7 @@ class _MyHomePageState extends State<MyHomePage> {
               onChanged: (value) {
                 setState(() {
                   filterText = value;
-                  //filterRecipes(filterText);
+                  filterRecipes(filterText);
                 });
               },
               decoration: const InputDecoration(
@@ -127,6 +124,7 @@ class _MyHomePageState extends State<MyHomePage> {
         ],
       )),
       body: FutureBuilder<Iterable<Recipe>>(
+        // READ: https://api.flutter.dev/flutter/dart-async/Future-class.html
         future: getRecipes(),
         builder: ((context, snapshot) {
           var data = snapshot.data;
@@ -137,6 +135,15 @@ class _MyHomePageState extends State<MyHomePage> {
             //print(snapshot.data);
             //widget.db.recipes = snapshot.data!;
             recipes = snapshot.data as List<Recipe>;
+
+            if (isKeto == true) {
+              recipes = filterRecipesByKeto(isKeto);
+            }
+
+            if (filterText != '') {
+              recipes = filterRecipes(filterText);
+            }
+
             return ListView.builder(
               itemCount: recipes.length,
               itemBuilder: (context, index) {
@@ -165,7 +172,6 @@ class _MyHomePageState extends State<MyHomePage> {
     );
   }
 
-/*
   List<Recipe> getFilteredRecipes(List<Recipe> recipes) {
     if (filterText.isEmpty && !isKeto) {
       return recipes; // Return all recipes when no filter is applied
@@ -181,7 +187,6 @@ class _MyHomePageState extends State<MyHomePage> {
       return titleMatch || ingredientsMatch && ketoMatch;
     }).toList();
   }
-  */
 }
 
 class RecipeListItem extends StatefulWidget {
