@@ -6,7 +6,7 @@ import 'package:my_recipes/vm_display_recipe.dart';
 import 'db_logic.dart';
 
 Future<void> initializeApp() async {
-  //db_logic db = db_logic();
+
 }
 
 void main() async {
@@ -21,28 +21,38 @@ class MyApp extends StatelessWidget {
   // This widget is the root of your application.
   @override
   Widget build(BuildContext context) {
-    //db_logic db = db_logic();
+
     return MaterialApp(
       title: 'My Recipes Demo',
       theme: ThemeData(
         brightness: Brightness.dark,
       ),
+
       home: MyHomePage(title: 'My Recipes Home Page'),
+
     );
   }
 }
 
 class MyHomePage extends StatefulWidget {
+
   const MyHomePage({super.key, required this.title});
   final String title;
   //final db_logic db;
+
 
   @override
   State<MyHomePage> createState() => _MyHomePageState();
 }
 
 class _MyHomePageState extends State<MyHomePage> {
-  List<Recipe> recipes = [];
+  late db_logic db;
+
+  @override
+  void initState() {
+    super.initState();
+    db = db_logic();
+  }
 
   @override
   void initState() {
@@ -55,6 +65,7 @@ class _MyHomePageState extends State<MyHomePage> {
     setState(() {});
   }
 
+  List<Recipe> recipes = widget.db.recipes;
   // Note to self: Study this code.
   List<Recipe> filterRecipes(filterText) {
     List<Recipe> filteredRecipes = recipes.where((recipe) {
@@ -178,9 +189,7 @@ class _MyHomePageState extends State<MyHomePage> {
             // Navigate to RecipeFormPage and wait for result
             await Navigator.push(context,
                 MaterialPageRoute(builder: (context) => RecipeFormPage()));
-
             // If a new recipe was added, update the list of recipes
-
             setState(() {});
           },
           backgroundColor: Colors.lightBlue,
@@ -206,9 +215,8 @@ class _MyHomePageState extends State<MyHomePage> {
 }
 
 class RecipeListItem extends StatefulWidget {
-  const RecipeListItem(this.recipe, this.onUpdate, {super.key});
+  const RecipeListItem(this.recipe, this.onUpdate, this.db, {super.key});
   final Recipe recipe;
-  //final db_logic db;
   // onUpdate calls updateRecipes which calls setState()
   // in our main Widget to update our list of recipes
   final Function() onUpdate;

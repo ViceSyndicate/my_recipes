@@ -40,11 +40,9 @@ Future<List<Recipe>> getRecipes() async {
       Recipe recipeObj = Recipe.fromJson(recipe);
       print('Adding: ' + recipeObj.title);
     }
-    return recipes;
-  } else {
+    //_recipes = recipes;
     return recipes;
   }
-}
 
 Future<void> saveRecipe(Recipe recipe) async {
   try {

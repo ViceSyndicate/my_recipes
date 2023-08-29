@@ -7,8 +7,8 @@ import 'package:my_recipes/db_logic.dart';
 import 'package:uuid/uuid.dart';
 
 class RecipeFormPage extends StatelessWidget {
-  const RecipeFormPage({super.key});
-
+  const RecipeFormPage(this.db, {super.key});
+  final db_logic db;
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -218,7 +218,7 @@ class MyCustomFormState extends State<MyCustomForm> {
             notes: _notesController.text,
             isKeto: _isKeto,
           );
-          await saveRecipe(recipe);
+          await widget.db.saveRecipe(recipe);
           Navigator.pop(
             context,
           );
