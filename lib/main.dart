@@ -1,3 +1,4 @@
+import 'package:file_picker/file_picker.dart';
 import 'package:flutter/material.dart';
 import 'package:my_recipes/vm_create_recipe.dart';
 import 'package:my_recipes/model_recipe.dart';
@@ -111,7 +112,22 @@ class _MyHomePageState extends State<MyHomePage> {
           ),
           IconButton(
               icon: const Icon(Icons.download),
-              onPressed: () {},
+              onPressed: () {
+                Future<void> _exportRecipes() async {
+                  FilePickerResult? result =
+                      await FilePicker.platform.pickFiles(
+                    type: FileType.custom,
+                    allowedExtensions: ['json'],
+                  );
+
+                  if (result != null) {
+                    String filePath = result.files.single.path!;
+
+                    // Implement code to save the JSON file to the selected location (filePath)
+                    // You can use the 'filePath' to save your JSON file.
+                  }
+                }
+              },
               tooltip: 'Export Recipes'),
           IconButton(
               icon: const Icon(Icons.upload),

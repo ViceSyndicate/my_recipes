@@ -70,3 +70,16 @@ Future<void> deleteRecipe(Recipe recipe) async {
   recipesList.removeWhere((r) => r.id == recipe.id);
   storage.setItem('recipes', jsonEncode(recipesList));
 }
+
+void exportRecipes() {
+  //List<Recipe> recipes = getRecipes() as List<Recipe>;
+  storage = LocalStorage('recipe_data.json');
+}
+
+void importRecipes() {
+  storage = LocalStorage('recipe_data.json');
+  storage.ready;
+  // WIP
+  List<Recipe> recipes = [];
+  storage.setItem('recipes', jsonEncode(recipes));
+}
