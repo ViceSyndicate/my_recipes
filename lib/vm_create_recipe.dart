@@ -15,15 +15,14 @@ class RecipeFormPage extends StatelessWidget {
       appBar: AppBar(
         title: const Text('Back to Recipes'),
       ),
-      body: MyCustomForm(db),
+      body: MyCustomForm(),
     );
   }
 }
 
 // Create a Form widget.
 class MyCustomForm extends StatefulWidget {
-  const MyCustomForm(this.db, {super.key});
-  final db_logic db;
+  const MyCustomForm({super.key});
   @override
   MyCustomFormState createState() {
     return MyCustomFormState();

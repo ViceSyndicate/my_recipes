@@ -1,3 +1,4 @@
+import 'package:file_picker/file_picker.dart';
 import 'package:flutter/material.dart';
 import 'package:my_recipes/vm_create_recipe.dart';
 import 'package:my_recipes/model_recipe.dart';
@@ -5,7 +6,7 @@ import 'package:my_recipes/vm_display_recipe.dart';
 import 'db_logic.dart';
 
 Future<void> initializeApp() async {
-  db_logic db = db_logic();
+
 }
 
 void main() async {
@@ -20,21 +21,25 @@ class MyApp extends StatelessWidget {
   // This widget is the root of your application.
   @override
   Widget build(BuildContext context) {
-    db_logic db = db_logic();
+
     return MaterialApp(
       title: 'My Recipes Demo',
       theme: ThemeData(
         brightness: Brightness.dark,
       ),
-      home: MyHomePage(title: 'My Recipes Home Page', db),
+
+      home: MyHomePage(title: 'My Recipes Home Page'),
+
     );
   }
 }
 
 class MyHomePage extends StatefulWidget {
-  const MyHomePage(this.db, {super.key, required this.title});
+
+  const MyHomePage({super.key, required this.title});
   final String title;
-  final db_logic db;
+  //final db_logic db;
+
 
   @override
   State<MyHomePage> createState() => _MyHomePageState();
@@ -49,11 +54,15 @@ class _MyHomePageState extends State<MyHomePage> {
     db = db_logic();
   }
 
+  @override
+  void initState() {
+    super.initState();
+  }
+
   String filterText = '';
   bool isKeto = false;
   void updateRecipes() {
     setState(() {});
-    db.getRecipes();
   }
 
   List<Recipe> recipes = widget.db.recipes;
@@ -114,7 +123,22 @@ class _MyHomePageState extends State<MyHomePage> {
           ),
           IconButton(
               icon: const Icon(Icons.download),
-              onPressed: () {},
+              onPressed: () {
+                Future<void> _exportRecipes() async {
+                  FilePickerResult? result =
+                      await FilePicker.platform.pickFiles(
+                    type: FileType.custom,
+                    allowedExtensions: ['json'],
+                  );
+
+                  if (result != null) {
+                    String filePath = result.files.single.path!;
+
+                    // Implement code to save the JSON file to the selected location (filePath)
+                    // You can use the 'filePath' to save your JSON file.
+                  }
+                }
+              },
               tooltip: 'Export Recipes'),
           IconButton(
               icon: const Icon(Icons.upload),
@@ -126,11 +150,18 @@ class _MyHomePageState extends State<MyHomePage> {
               tooltip: 'Refresh Recipes'),
         ],
       )),
-      body: FutureBuilder<List<Recipe>>(
-        future: db.getRecipes(),
+      body: FutureBuilder<Iterable<Recipe>>(
+        // READ: https://api.flutter.dev/flutter/dart-async/Future-class.html
+        future: getRecipes(),
         builder: ((context, snapshot) {
+          var data = snapshot.data;
+          if (data == null) {
+            return const Text("Null Data!");
+          }
           if (snapshot.hasData) {
-            recipes = snapshot.data!;
+            //print(snapshot.data);
+            //widget.db.recipes = snapshot.data!;
+            recipes = snapshot.data as List<Recipe>;
 
             if (isKeto == true) {
               recipes = filterRecipesByKeto(isKeto);
@@ -139,28 +170,26 @@ class _MyHomePageState extends State<MyHomePage> {
             if (filterText != '') {
               recipes = filterRecipes(filterText);
             }
+
             return ListView.builder(
               itemCount: recipes.length,
               itemBuilder: (context, index) {
-                return RecipeListItem(recipes[index], updateRecipes, db);
+                return RecipeListItem(recipes[index], updateRecipes);
               },
             );
           } else if (snapshot.hasError) {
             return Center(
                 child: Text("Error fetching recipes: ${snapshot.error}"));
-          } else {
-            return const Center(child: CircularProgressIndicator());
           }
+          return const Center(child: CircularProgressIndicator());
         }),
       ),
       floatingActionButton: FloatingActionButton(
           onPressed: () async {
             // Navigate to RecipeFormPage and wait for result
             await Navigator.push(context,
-                MaterialPageRoute(builder: (context) => RecipeFormPage(db)));
-
+                MaterialPageRoute(builder: (context) => RecipeFormPage()));
             // If a new recipe was added, update the list of recipes
-
             setState(() {});
           },
           backgroundColor: Colors.lightBlue,
@@ -168,7 +197,6 @@ class _MyHomePageState extends State<MyHomePage> {
     );
   }
 
-/*
   List<Recipe> getFilteredRecipes(List<Recipe> recipes) {
     if (filterText.isEmpty && !isKeto) {
       return recipes; // Return all recipes when no filter is applied
@@ -184,13 +212,11 @@ class _MyHomePageState extends State<MyHomePage> {
       return titleMatch || ingredientsMatch && ketoMatch;
     }).toList();
   }
-  */
 }
 
 class RecipeListItem extends StatefulWidget {
   const RecipeListItem(this.recipe, this.onUpdate, this.db, {super.key});
   final Recipe recipe;
-  final db_logic db;
   // onUpdate calls updateRecipes which calls setState()
   // in our main Widget to update our list of recipes
   final Function() onUpdate;
@@ -215,10 +241,11 @@ class _RecipeListItemState extends State<RecipeListItem> {
       trailing: IconButton(
         tooltip: 'Delete Recipe',
         icon: const Icon(Icons.delete),
-        onPressed: () {
+        onPressed: () async {
           /* I think I need to remake the delete button to be a future because 
           somtimes it deletes a recipe but  */
-          widget.db.deleteRecipe(widget.recipe);
+          await deleteRecipe(widget.recipe);
+          widget.onUpdate();
           // Dirty fix to remove the need to use refresh button
           // When the UI doesn't update properly.
           Future.delayed(const Duration(milliseconds: 10))
