@@ -119,8 +119,9 @@ class _MyHomePageState extends State<MyHomePage> {
               tooltip: 'Export Recipes'),
           IconButton(
               icon: const Icon(Icons.upload),
-              onPressed: () {
-                importRecipes();
+              onPressed: () async {
+                await importRecipes();
+                setState(() {});
               },
               tooltip: 'Import Recipes'),
           IconButton(

@@ -4,12 +4,12 @@
 // https://docs.flutter.dev/cookbook/persistence/reading-writing-files
 
 import 'dart:convert';
-import 'dart:io';
+//import 'dart:io';
 import 'package:my_recipes/model_recipe.dart';
-import 'package:path_provider/path_provider.dart';
+//import 'package:path_provider/path_provider.dart';
 import 'dart:async';
 import 'package:localstorage/localstorage.dart';
-import 'package:url_launcher/url_launcher.dart';
+//import 'package:url_launcher/url_launcher.dart';
 import 'dart:html' as html;
 import 'package:file_picker/file_picker.dart';
 
@@ -64,6 +64,14 @@ Future<void> saveRecipe(Recipe recipe) async {
   }
 }
 
+Future<void> saveRecipeList(List<Recipe> recipes) async {
+  try {
+    await storage.setItem('recipes', jsonEncode(recipes));
+  } catch (e) {
+    print('Error: $e');
+  }
+}
+
 Future<void> deleteRecipe(Recipe recipe) async {
   Iterable<Recipe> recipes = await getRecipes();
 
@@ -86,7 +94,6 @@ Future<void> exportRecipes() async {
       // Create a data URI for the JSON content
       final dataUri =
           'data:application/json;charset=utf-8,${Uri.encodeComponent(jsonData)}';
-
       // Create an anchor element for the download link
       final anchor = html.AnchorElement(href: dataUri)
         ..target = 'webdownload'
@@ -105,10 +112,21 @@ Future<void> exportRecipes() async {
 }
 
 Future<void> importRecipes() async {
-  //https://pub.dev/documentation/file_picker/latest/_internal_file_picker_web/FilePickerWeb-class.html
   FilePickerResult? result = await FilePicker.platform
       .pickFiles(type: FileType.custom, allowedExtensions: ['json']);
+  List<Recipe> importedRecipes = [];
   if (result != null) {
-    print(result);
-  } else {}
+    try {
+      String utfDecoded = utf8.decode(result.files.single.bytes as List<int>);
+      String decodedData = json.decode(utfDecoded);
+
+      List<dynamic> dynamicList = json.decode(decodedData);
+      for (var recipe in dynamicList) {
+        importedRecipes.add(Recipe.fromJson(recipe));
+      }
+      saveRecipeList(importedRecipes);
+    } catch (e) {
+      print("Error importing recipes: $e");
+    }
+  }
 }
