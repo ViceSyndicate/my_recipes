@@ -9,6 +9,9 @@ import 'package:my_recipes/model_recipe.dart';
 import 'package:path_provider/path_provider.dart';
 import 'dart:async';
 import 'package:localstorage/localstorage.dart';
+import 'package:url_launcher/url_launcher.dart';
+import 'dart:html' as html;
+import 'package:file_picker/file_picker.dart';
 
 // https://pub.dev/packages/localstorage/example
 
@@ -69,4 +72,43 @@ Future<void> deleteRecipe(Recipe recipe) async {
   print('Id to remove: ' + recipe.id.toString());
   recipesList.removeWhere((r) => r.id == recipe.id);
   storage.setItem('recipes', jsonEncode(recipesList));
+}
+
+Future<void> exportRecipes() async {
+  final LocalStorage storage = LocalStorage('recipe_data.json');
+  await storage.ready;
+  var recipeData = storage.getItem('recipes');
+  print("recipeData: $recipeData");
+  if (recipeData != null) {
+    String jsonData = json.encode(recipeData);
+
+    try {
+      // Create a data URI for the JSON content
+      final dataUri =
+          'data:application/json;charset=utf-8,${Uri.encodeComponent(jsonData)}';
+
+      // Create an anchor element for the download link
+      final anchor = html.AnchorElement(href: dataUri)
+        ..target = 'webdownload'
+        ..download = 'recipe_data.json'; // Specify the filename
+
+      // Trigger a click event on the anchor element
+      anchor.click();
+    } catch (e) {
+      // Handle any exceptions that occur
+      print("Error exporting recipes: $e");
+    }
+  } else {
+    // Handle the case where the data is not found in local storage.
+    print("Recipe data not found in local storage.");
+  }
+}
+
+Future<void> importRecipes() async {
+  //https://pub.dev/documentation/file_picker/latest/_internal_file_picker_web/FilePickerWeb-class.html
+  FilePickerResult? result = await FilePicker.platform
+      .pickFiles(type: FileType.custom, allowedExtensions: ['json']);
+  if (result != null) {
+    print(result);
+  } else {}
 }

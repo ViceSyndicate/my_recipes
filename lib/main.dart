@@ -90,6 +90,8 @@ class _MyHomePageState extends State<MyHomePage> {
                 setState(() {
                   filterText = value;
                   filterRecipes(filterText);
+                  // I never set the recipes [] to what the filterRecipes
+                  // function returns so why does it work?
                 });
               },
               decoration: const InputDecoration(
@@ -111,11 +113,15 @@ class _MyHomePageState extends State<MyHomePage> {
           ),
           IconButton(
               icon: const Icon(Icons.download),
-              onPressed: () {},
+              onPressed: () {
+                exportRecipes();
+              },
               tooltip: 'Export Recipes'),
           IconButton(
               icon: const Icon(Icons.upload),
-              onPressed: () {},
+              onPressed: () {
+                importRecipes();
+              },
               tooltip: 'Import Recipes'),
           IconButton(
               icon: const Icon(Icons.refresh),
