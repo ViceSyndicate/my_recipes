@@ -112,7 +112,7 @@ class _MyHomePageState extends State<MyHomePage> {
             },
           ),
           IconButton(
-              icon: const Icon(Icons.download),
+              icon: const Icon(Icons.save),
               onPressed: () {
                 exportRecipes();
               },
@@ -124,10 +124,12 @@ class _MyHomePageState extends State<MyHomePage> {
                 setState(() {});
               },
               tooltip: 'Import Recipes'),
+          /*
           IconButton(
               icon: const Icon(Icons.refresh),
               onPressed: updateRecipes,
               tooltip: 'Refresh Recipes'),
+              */
         ],
       )),
       body: FutureBuilder<Iterable<Recipe>>(
