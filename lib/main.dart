@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:my_recipes/vm_create_recipe.dart';
 import 'package:my_recipes/model_recipe.dart';
 import 'package:my_recipes/vm_display_recipe.dart';
+import 'package:my_recipes/vm_edit_recipe.dart';
 import 'db_logic.dart';
 
 Future<void> initializeApp() async {
@@ -214,30 +215,43 @@ class _RecipeListItemState extends State<RecipeListItem> {
   @override
   Widget build(BuildContext context) {
     return ListTile(
-      textColor: Colors.white,
-      title: Text(widget.recipe.title),
-      subtitle: Text(widget.recipe.ingredients.join(', ')),
-      onTap: () => {
-        Navigator.push(
-            context,
-            MaterialPageRoute(
-                builder: (context) => DisplayRecipePage(widget.recipe)))
-      },
-      trailing: IconButton(
-        tooltip: 'Delete Recipe',
-        icon: const Icon(Icons.delete),
-        onPressed: () async {
-          /* I think I need to remake the delete button to be a future because 
+        textColor: Colors.white,
+        title: Text(widget.recipe.title),
+        subtitle: Text(widget.recipe.ingredients.join(', ')),
+        onTap: () => {
+              Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                      builder: (context) => DisplayRecipePage(widget.recipe)))
+            },
+        trailing: Wrap(
+          children: <Widget>[
+            IconButton(
+              tooltip: 'Edit Recipe',
+              icon: const Icon(Icons.edit),
+              onPressed: () async {
+                await Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                        builder: (context) => EditRecipePage(widget.recipe)));
+              },
+            ),
+            IconButton(
+              tooltip: 'Delete Recipe',
+              icon: const Icon(Icons.delete),
+              onPressed: () async {
+                /* I think I need to remake the delete button to be a future because 
           somtimes it deletes a recipe but  */
-          await deleteRecipe(widget.recipe);
-          widget.onUpdate();
-          // Dirty fix to remove the need to use refresh button
-          // When the UI doesn't update properly.
-          Future.delayed(const Duration(milliseconds: 10))
-              .then((value) => {widget.onUpdate()});
-        },
-      ),
-    );
+                await deleteRecipe(widget.recipe);
+                widget.onUpdate();
+                // Dirty fix to remove the need to use refresh button
+                // When the UI doesn't update properly.
+                Future.delayed(const Duration(milliseconds: 10))
+                    .then((value) => {widget.onUpdate()});
+              },
+            ),
+          ],
+        ));
   }
 }
 
