@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:my_recipes/model_recipe.dart';
 import 'package:my_recipes/db_logic.dart';
-import 'package:uuid/uuid.dart';
 
 class EditRecipePage extends StatelessWidget {
   final Recipe recipe;
@@ -49,7 +48,6 @@ class MyEditFormState extends State<MyEditForm> {
 
   void initState() {
     super.initState();
-    print('editing: ${widget.recipe.id}');
     _titleController = TextEditingController(text: widget.recipe.title);
 
     _ingredientControllers = [];

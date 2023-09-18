@@ -38,11 +38,9 @@ Future<List<Recipe>> getRecipes() async {
   String? recipeJson = storage.getItem('recipes');
   if (recipeJson != null) {
     List<dynamic> decodedRecipes = jsonDecode(recipeJson);
-    print('Adding recipes to list.');
     for (var recipe in decodedRecipes) {
       recipes.add(Recipe.fromJson(recipe));
-      Recipe recipeObj = Recipe.fromJson(recipe);
-      print('Adding: ' + recipeObj.title);
+      //Recipe recipeObj = Recipe.fromJson(recipe);
     }
     return recipes;
   } else {
@@ -78,7 +76,6 @@ Future<void> deleteRecipe(Recipe recipe) async {
 
   List<Recipe> recipesList = recipes.toList(growable: true);
 
-  print('Deleting: ${recipe.id}');
   recipesList.removeWhere((r) => r.id == recipe.id);
   storage.setItem('recipes', jsonEncode(recipesList));
 }
