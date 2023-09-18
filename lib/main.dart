@@ -236,6 +236,9 @@ class _RecipeListItemState extends State<RecipeListItem> {
                     context,
                     MaterialPageRoute(
                         builder: (context) => EditRecipePage(widget.recipe)));
+                Future.delayed(const Duration(milliseconds: 10))
+                    .then((value) => {widget.onUpdate()});
+                //setState(() {});
               },
             ),
             IconButton(

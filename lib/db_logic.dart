@@ -12,6 +12,7 @@ import 'package:localstorage/localstorage.dart';
 //import 'package:url_launcher/url_launcher.dart';
 import 'dart:html' as html;
 import 'package:file_picker/file_picker.dart';
+import 'package:uuid/uuid.dart';
 
 // https://pub.dev/packages/localstorage/example
 
@@ -77,7 +78,7 @@ Future<void> deleteRecipe(Recipe recipe) async {
 
   List<Recipe> recipesList = recipes.toList(growable: true);
 
-  print('Id to remove: ' + recipe.id.toString());
+  print('Deleting: ${recipe.id}');
   recipesList.removeWhere((r) => r.id == recipe.id);
   storage.setItem('recipes', jsonEncode(recipesList));
 }
@@ -129,4 +130,15 @@ Future<void> importRecipes() async {
       print("Error importing recipes: $e");
     }
   }
+}
+
+Future<void> saveEditedRecipe(Recipe recipe) async {
+  // Delete old recipe
+  await deleteRecipe(recipe);
+
+  // Generate and set new id for edited recipe
+  Uuid uuidGen = const Uuid();
+  recipe.id = uuidGen.v4();
+
+  await saveRecipe(recipe);
 }

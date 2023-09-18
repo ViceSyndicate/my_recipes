@@ -49,6 +49,7 @@ class MyEditFormState extends State<MyEditForm> {
 
   void initState() {
     super.initState();
+    print('editing: ${widget.recipe.id}');
     _titleController = TextEditingController(text: widget.recipe.title);
 
     _ingredientControllers = [];
@@ -224,17 +225,16 @@ class MyEditFormState extends State<MyEditForm> {
           for (var element in _ingredientControllers) {
             ingredients.add(element.text);
           }
-          Uuid uuidGen = const Uuid();
-          var newId = uuidGen.v4();
+
           final recipe = Recipe(
-            id: newId,
+            id: widget.recipe.id,
             title: _titleController.text,
             ingredients: ingredients,
             instructions: _instructionsController.text,
             notes: _notesController.text,
             isKeto: _isKeto,
           );
-          await saveRecipe(recipe); // ToDo
+          await saveEditedRecipe(recipe); // ToDo
           Navigator.pop(
             context,
           );
