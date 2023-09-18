@@ -51,6 +51,12 @@ class MyEditFormState extends State<MyEditForm> {
     _titleController = TextEditingController(text: widget.recipe.title);
 
     _ingredientControllers = [];
+    for (int i = 0; i < widget.recipe.ingredients.length; i++) {
+      String ingredient = widget.recipe.ingredients[i];
+      TextEditingController controller = TextEditingController();
+      controller.text = ingredient;
+      _ingredientControllers.add(controller);
+    }
 
     _instructionsController =
         TextEditingController(text: widget.recipe.instructions);
