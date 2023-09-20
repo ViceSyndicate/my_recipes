@@ -1,7 +1,6 @@
 // ignore_for_file: unnecessary_const
 
 import 'package:flutter/material.dart';
-import 'package:flutter/cupertino.dart';
 import 'package:my_recipes/model_recipe.dart';
 import 'package:my_recipes/db_logic.dart';
 import 'package:uuid/uuid.dart';
@@ -15,7 +14,7 @@ class RecipeFormPage extends StatelessWidget {
       appBar: AppBar(
         title: const Text('Back to Recipes'),
       ),
-      body: MyCustomForm(),
+      body: const MyCustomForm(),
     );
   }
 }
@@ -85,7 +84,7 @@ class MyCustomFormState extends State<MyCustomForm> {
           //crossAxisAlignment: CrossAxisAlignment.start,
           shrinkWrap: true,
           children: <Widget>[
-            Padding(padding: EdgeInsets.all(3)),
+            const Padding(padding: EdgeInsets.all(3)),
             TextFormField(
               onSaved: (String? value) {},
               validator: (String? value) {
@@ -107,7 +106,7 @@ class MyCustomFormState extends State<MyCustomForm> {
                   )),
                   icon: Icon(Icons.format_align_left)),
             ),
-            Padding(padding: EdgeInsets.all(3)),
+            const Padding(padding: EdgeInsets.all(3)),
             TextFormField(
               keyboardType: TextInputType.multiline,
               maxLines: null,
@@ -124,7 +123,7 @@ class MyCustomFormState extends State<MyCustomForm> {
                 icon: Icon(Icons.format_align_left),
               ),
             ),
-            Padding(padding: EdgeInsets.all(3)),
+            const Padding(padding: EdgeInsets.all(3)),
             TextFormField(
               keyboardType: TextInputType.multiline,
               maxLines: null,
@@ -142,7 +141,7 @@ class MyCustomFormState extends State<MyCustomForm> {
                 icon: Icon(Icons.format_align_left),
               ),
             ),
-            Padding(padding: EdgeInsets.all(3)),
+            const Padding(padding: EdgeInsets.all(3)),
             ..._ingredientControllers.asMap().entries.map((entry) {
               final index = entry.key;
               final controller = entry.value;
@@ -160,17 +159,17 @@ class MyCustomFormState extends State<MyCustomForm> {
                         }
                       },
                       decoration: InputDecoration(
-                          contentPadding: EdgeInsets.all(10),
+                          contentPadding: const EdgeInsets.all(10),
                           labelText: 'Ingredient ${index + 1}',
-                          border: OutlineInputBorder(
-                              borderRadius: const BorderRadius.all(
-                            const Radius.circular(10.0),
+                          border: const OutlineInputBorder(
+                              borderRadius: BorderRadius.all(
+                            Radius.circular(10.0),
                           )),
-                          icon: Icon(Icons.format_align_left)),
+                          icon: const Icon(Icons.format_align_left)),
                     ),
                   ),
                   IconButton(
-                    icon: Icon(Icons.remove_circle_outline),
+                    icon: const Icon(Icons.remove_circle_outline),
                     onPressed: () => _removeIngredientField(index),
                   ),
                 ],

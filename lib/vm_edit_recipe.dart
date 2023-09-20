@@ -18,8 +18,6 @@ class EditRecipePage extends StatelessWidget {
   }
 }
 
-// A lot of this code is copied from create_recipe but it
-// takes a recipe variable instead.
 class MyEditForm extends StatefulWidget {
   final Recipe recipe;
 
@@ -208,14 +206,6 @@ class MyEditFormState extends State<MyEditForm> {
                   },
                 ),
                 Text('Is Keto'),
-                /*
-                Expanded(
-                  child: TextButton(
-                    child: Text('Add ingredient'),
-                    onPressed: _addIngredientField,
-                  ),
-                ),
-                */
               ],
             ),
           ],

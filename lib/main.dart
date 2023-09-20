@@ -5,9 +5,7 @@ import 'package:my_recipes/vm_display_recipe.dart';
 import 'package:my_recipes/vm_edit_recipe.dart';
 import 'db_logic.dart';
 
-Future<void> initializeApp() async {
-  //db_logic db = db_logic();
-}
+Future<void> initializeApp() async {}
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -27,7 +25,7 @@ class MyApp extends StatelessWidget {
       theme: ThemeData(
         brightness: Brightness.dark,
       ),
-      home: MyHomePage(title: 'My Recipes Home Page'),
+      home: const MyHomePage(title: 'My Recipes Home Page'),
     );
   }
 }
@@ -35,7 +33,6 @@ class MyApp extends StatelessWidget {
 class MyHomePage extends StatefulWidget {
   const MyHomePage({super.key, required this.title});
   final String title;
-  //final db_logic db;
 
   @override
   State<MyHomePage> createState() => _MyHomePageState();
@@ -55,7 +52,6 @@ class _MyHomePageState extends State<MyHomePage> {
     setState(() {});
   }
 
-  // Note to self: Study this code.
   List<Recipe> filterRecipes(filterText) {
     List<Recipe> filteredRecipes = recipes.where((recipe) {
       final titleMatches =
@@ -127,12 +123,6 @@ class _MyHomePageState extends State<MyHomePage> {
               },
               tooltip:
                   'Import Recipes - Upload your recipes.json that you exported earlier.'),
-          /*
-          IconButton(
-              icon: const Icon(Icons.refresh),
-              onPressed: updateRecipes,
-              tooltip: 'Refresh Recipes'),
-              */
         ],
       )),
       body: FutureBuilder<Iterable<Recipe>>(
@@ -144,8 +134,6 @@ class _MyHomePageState extends State<MyHomePage> {
             return const Text("Null Data!");
           }
           if (snapshot.hasData) {
-            //print(snapshot.data);
-            //widget.db.recipes = snapshot.data!;
             recipes = snapshot.data as List<Recipe>;
 
             if (isKeto == true) {
@@ -204,9 +192,7 @@ class _MyHomePageState extends State<MyHomePage> {
 class RecipeListItem extends StatefulWidget {
   const RecipeListItem(this.recipe, this.onUpdate, {super.key});
   final Recipe recipe;
-  //final db_logic db;
-  // onUpdate calls updateRecipes which calls setState()
-  // in our main Widget to update our list of recipes
+
   final Function() onUpdate;
 
   @override
@@ -238,21 +224,18 @@ class _RecipeListItemState extends State<RecipeListItem> {
                         builder: (context) => EditRecipePage(widget.recipe)));
                 Future.delayed(const Duration(milliseconds: 10))
                     .then((value) => {widget.onUpdate()});
-                //setState(() {});
               },
             ),
             IconButton(
               tooltip: 'Delete Recipe',
               icon: const Icon(Icons.delete),
               onPressed: () async {
-                /* I think I need to remake the delete button to be a future because 
-          somtimes it deletes a recipe but  */
                 await deleteRecipe(widget.recipe);
                 widget.onUpdate();
                 // Dirty fix to remove the need to use refresh button
                 // When the UI doesn't update properly.
-                Future.delayed(const Duration(milliseconds: 10))
-                    .then((value) => {widget.onUpdate()});
+                // Might not be needed anymore
+                //Future.delayed(const Duration(milliseconds: 10)).then((value) => {widget.onUpdate()});
               },
             ),
           ],

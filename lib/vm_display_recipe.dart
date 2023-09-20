@@ -32,14 +32,14 @@ class DisplayRecipePage extends StatelessWidget {
               content: recipe.notes,
             ),
             SizedBox(height: 16),
-            Text(
+            const Text(
               'Is Keto:',
               style: TextStyle(
                 fontSize: 18,
                 fontWeight: FontWeight.bold,
               ),
             ),
-            SizedBox(height: 8),
+            const SizedBox(height: 8),
             Text(recipe.isKeto ? 'Yes' : 'No'),
           ],
         ),
